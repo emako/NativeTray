@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace NativeTray;
 
 /// <summary>
-/// Manages a Win32 tray icon and its context menu for WPF applications.
+/// Manages a Win32 tray icon and its context menu.
 /// </summary>
 public partial class TrayIconHost : IDisposable
 {
@@ -41,7 +41,7 @@ public partial class TrayIconHost : IDisposable
     private readonly uint taskbarCreatedMessageId = 0;
 
     /// <summary>
-    /// ???
+    /// The theme mode for the tray icon (e.g., auto adapt to light/dark mode).
     /// </summary>
     public TrayThemeMode ThemeMode
     {
@@ -155,7 +155,7 @@ public partial class TrayIconHost : IDisposable
     public TrayMenu Menu { get; set; } = null!;
 
     /// <summary>
-    /// ???
+    /// Occurs when the user preference (such as theme) changes.
     /// </summary>
     public event EventHandler<EventArgs>? UserPreferenceChanged = null;
 
@@ -345,6 +345,10 @@ public partial class TrayIconHost : IDisposable
 
                 if (string.Equals(area, "ImmersiveColorSet", StringComparison.Ordinal))
                 {
+                    if (ThemeMode == TrayThemeMode.System)
+                    {
+                        SetThemeMode(TrayThemeMode.System);
+                    }
                     UserPreferenceChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -353,6 +357,10 @@ public partial class TrayIconHost : IDisposable
         {
             if (ThemeMode != TrayThemeMode.None)
             {
+                if (ThemeMode == TrayThemeMode.System)
+                {
+                    SetThemeMode(TrayThemeMode.System);
+                }
                 UserPreferenceChanged?.Invoke(this, EventArgs.Empty);
             }
         }
