@@ -8,7 +8,7 @@ namespace NativeTray;
 /// <summary>
 /// Manages a Win32 tray icon and its context menu for WPF applications.
 /// </summary>
-public class TrayIconHost : IDisposable
+public partial class TrayIconHost : IDisposable
 {
     /// <summary>
     /// Handle to the hidden window hosting the tray icon.
@@ -39,6 +39,15 @@ public class TrayIconHost : IDisposable
     /// Windows message ID for TaskbarCreated broadcast.
     /// </summary>
     private readonly uint taskbarCreatedMessageId = 0;
+
+    /// <summary>
+    /// ???
+    /// </summary>
+    public TrayThemeMode ThemeMode
+    {
+        get => field;
+        set => SetThemeMode(field = value);
+    } = TrayThemeMode.None;
 
     /// <summary>
     /// Tooltip text for the tray icon.
@@ -144,6 +153,11 @@ public class TrayIconHost : IDisposable
     /// Context menu for the tray icon.
     /// </summary>
     public TrayMenu Menu { get; set; } = null!;
+
+    /// <summary>
+    /// ???
+    /// </summary>
+    public event EventHandler<EventArgs>? UserPreferenceChanged = null;
 
     /// <summary>
     /// Occurs when the balloon tip is clicked.
@@ -321,6 +335,25 @@ public class TrayIconHost : IDisposable
                         BalloonTipClicked?.Invoke(this, EventArgs.Empty);
                         break;
                 }
+            }
+        }
+        else if (msg == (uint)User32.WindowMessage.WM_SETTINGCHANGE)
+        {
+            if (ThemeMode != TrayThemeMode.None)
+            {
+                string? area = Marshal.PtrToStringUni(lParam);
+
+                if (string.Equals(area, "ImmersiveColorSet", StringComparison.Ordinal))
+                {
+                    UserPreferenceChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+        else if (msg == (uint)User32.WindowMessage.WM_THEMECHANGED)
+        {
+            if (ThemeMode != TrayThemeMode.None)
+            {
+                UserPreferenceChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         return User32.DefWindowProc(hWnd, msg, wParam, lParam);

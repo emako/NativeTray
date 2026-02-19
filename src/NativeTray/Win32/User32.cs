@@ -405,6 +405,7 @@ internal static class User32
         WM_SYSMENU = 0x0313,
         WM_PRINT = 0x0317,
         WM_PRINTCLIENT = 0x0318,
+        WM_THEMECHANGED = 0x031A,
         WM_HANDHELDFIRST = 0x0358,
         WM_HANDHELDLAST = 0x035F,
         WM_AFXFIRST = 0x0360,

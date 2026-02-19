@@ -24,6 +24,7 @@ internal partial class TrayIconManager
         {
             ToolTipText = "NativeTray.Demo.WPF",
             Icon = icon.Handle,
+            ThemeMode = TrayThemeMode.System,
             Menu =
             [
                 new TrayMenuItem()
