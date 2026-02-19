@@ -1,7 +1,7 @@
 Set-Location $PSScriptRoot
 
 $projects = @(
-    "..\src\Wpf.Ui.Violeta"
+    "..\src\NativeTray"
 )
 
 foreach ($proj in $projects) {
