@@ -31,7 +31,7 @@
         <PackageIcon>logo.png</PackageIcon>
         <IsRoslynAnalyzer>true</IsRoslynAnalyzer>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <PackSatelliteAssemblies>false</PackSatelliteAssemblies>
+        <NoWarn>$(NoWarn);CA1512</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
