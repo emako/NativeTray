@@ -2,8 +2,14 @@
 
 namespace NativeTray;
 
+/// <summary>
+/// Represents a separator line in a tray context menu.
+/// </summary>
 public sealed class TraySeparator : ITrayMenuItemBase
 {
+    /// <summary>
+    /// Separators do not have submenus.
+    /// </summary>
     public TrayMenu? Menu
     {
         get => null;
@@ -11,7 +17,7 @@ public sealed class TraySeparator : ITrayMenuItemBase
     }
 
     /// <summary>
-    /// Bitmap
+    /// Separators do not have icons.
     /// </summary>
     public object? Icon
     {

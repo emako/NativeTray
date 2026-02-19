@@ -8,28 +8,55 @@ using System.Runtime.InteropServices;
 
 namespace NativeTray;
 
+/// <summary>
+/// Represents a context menu for the tray icon.
+/// </summary>
 public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
 {
+    /// <summary>
+    /// Gets the parent menu item if this menu is a submenu, otherwise null.
+    /// </summary>
     public TrayMenuItem? Parent { get; internal set; }
 
     private readonly ObservableCollection<ITrayMenuItemBase> _items = [];
 
+    /// <summary>
+    /// Gets the list of menu items contained in this menu.
+    /// </summary>
     public IList<ITrayMenuItemBase> Items => _items;
 
+    /// <summary>
+    /// Gets the number of items in the menu.
+    /// </summary>
     public int Count => _items.Count;
 
+    /// <summary>
+    /// Gets a value indicating whether the menu is read-only.
+    /// </summary>
     public bool IsReadOnly => false;
 
+    /// <summary>
+    /// Gets or sets a user-defined tag object.
+    /// </summary>
     public object? Tag { get; set; } = null;
 
+    /// <summary>
+    /// Gets or sets the menu item at the specified index.
+    /// </summary>
     public ITrayMenuItemBase this[int index]
     {
         get => _items[index];
         set => _items[index] = value;
     }
 
+    /// <summary>
+    /// Occurs before the menu is opened.
+    /// </summary>
     public event EventHandler<EventArgs>? Opening;
 
+    /// <summary>
+    /// Occurs after the menu is closed.
+    /// </summary>
     public event EventHandler<EventArgs>? Closed;
 
     public IEnumerator<ITrayMenuItemBase> GetEnumerator() => _items.GetEnumerator();
