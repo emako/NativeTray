@@ -1,14 +1,12 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Packaging;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Resources;
+using System.Windows.Forms;
 
-namespace NativeTray.Demo.WPF;
+namespace NativeTray.Demo.WinForms;
 
 internal partial class TrayIconManager
 {
@@ -18,11 +16,11 @@ internal partial class TrayIconManager
 
     private TrayIconManager()
     {
-        using Win32Icon icon = new(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/logo.ico"));
+        using Win32Icon icon = new(ResourceHelper.GetStream("NativeTray.Demo.WinForms.logo.ico"));
 
         _iconHost = new TrayIconHost()
         {
-            ToolTipText = "NativeTray.Demo.WPF",
+            ToolTipText = "NativeTray.Demo.WinForms",
             Icon = icon.Handle,
             ThemeMode = TrayThemeMode.System,
             Menu =
@@ -46,6 +44,7 @@ internal partial class TrayIconManager
                                 new TrayMenuItem()
                                 {
                                     Header = "Option1-1",
+                                    Command = ShowNotification,
                                 },
                                 new TrayMenuItem()
                                 {
@@ -61,9 +60,14 @@ internal partial class TrayIconManager
                 },
                 new TrayMenuItem()
                 {
+                    Header = "Show Window",
+                    Command = ShowWindow,
+                },
+                new TrayMenuItem()
+                {
                     Header = "Restart",
                     Command = Restart,
-                    IsBold = true, // Test the bold style
+                    IsBold = true,
                 },
                 new TrayMenuItem()
                 {
@@ -86,7 +90,7 @@ internal partial class TrayIconManager
         _ = GetInstance();
     }
 
-    public static void ShowNotification(string title, string content, ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
+    public static void ShowNotificationTip(string title, string content, ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
     {
         var iconHost = GetInstance()._iconHost;
         if (iconHost is null) return;
@@ -115,18 +119,34 @@ internal partial class TrayIconManager
 
     private static void ActivateOrRestoreMainWindow()
     {
-        if (Application.Current.MainWindow is not null)
+        Form? mainForm = Application.OpenForms["MainForm"];
+        if (mainForm is not null)
         {
-            if (Application.Current.MainWindow.IsVisible)
+            if (mainForm.Visible)
             {
-                Application.Current.MainWindow.Hide();
+                mainForm.Hide();
             }
             else
             {
-                Application.Current.MainWindow.Show();
-                Application.Current.MainWindow.Activate();
+                mainForm.Show();
+                mainForm.Activate();
             }
         }
+    }
+
+    private void ShowWindow(object? _)
+    {
+        Form? mainForm = Application.OpenForms["MainForm"];
+        if (mainForm is not null)
+        {
+            mainForm.Show();
+            mainForm.Activate();
+        }
+    }
+
+    private void ShowNotification(object? _)
+    {
+        ShowNotificationTip("NativeTray", "This is a balloon tip from WinForms!", ToolTipIcon.Info, 3000);
     }
 
     private void Restart(object? _)
@@ -164,22 +184,15 @@ internal partial class TrayIconManager
 
     private void Exit(object? _)
     {
-        Application.Current.Shutdown();
+        Application.Exit();
     }
 }
 
 file static class ResourceHelper
 {
-    static ResourceHelper()
+    public static Stream GetStream(string name, Assembly assembly = null!)
     {
-        if (!UriParser.IsKnownScheme("pack"))
-            _ = PackUriHelper.UriSchemePack;
-    }
-
-    public static Stream GetStream(string uriString)
-    {
-        Uri uri = new(uriString);
-        StreamResourceInfo info = Application.GetResourceStream(uri);
-        return info?.Stream!;
+        Stream stream = (assembly ?? Assembly.GetExecutingAssembly()).GetManifestResourceStream(name)!;
+        return stream;
     }
 }

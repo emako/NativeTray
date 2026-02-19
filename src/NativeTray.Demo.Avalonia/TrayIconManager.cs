@@ -1,14 +1,14 @@
-﻿using System;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Packaging;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Resources;
 
-namespace NativeTray.Demo.WPF;
+namespace NativeTray.Demo.Avalonia;
 
 internal partial class TrayIconManager
 {
@@ -18,11 +18,12 @@ internal partial class TrayIconManager
 
     private TrayIconManager()
     {
-        using Win32Icon icon = new(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/logo.ico"));
+        using var iconStream = AssetLoader.Open(new Uri("avares://NativeTray.Demo.Avalonia/logo.ico"));
+        using Win32Icon icon = new(iconStream);
 
         _iconHost = new TrayIconHost()
         {
-            ToolTipText = "NativeTray.Demo.WPF",
+            ToolTipText = "NativeTray.Demo.Avalonia",
             Icon = icon.Handle,
             ThemeMode = TrayThemeMode.System,
             Menu =
@@ -46,6 +47,7 @@ internal partial class TrayIconManager
                                 new TrayMenuItem()
                                 {
                                     Header = "Option1-1",
+                                    Command = ShowNotification,
                                 },
                                 new TrayMenuItem()
                                 {
@@ -61,9 +63,14 @@ internal partial class TrayIconManager
                 },
                 new TrayMenuItem()
                 {
+                    Header = "Show Window",
+                    Command = ShowWindow,
+                },
+                new TrayMenuItem()
+                {
                     Header = "Restart",
                     Command = Restart,
-                    IsBold = true, // Test the bold style
+                    IsBold = true,
                 },
                 new TrayMenuItem()
                 {
@@ -86,7 +93,7 @@ internal partial class TrayIconManager
         _ = GetInstance();
     }
 
-    public static void ShowNotification(string title, string content, ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
+    public static void ShowNotificationTip(string title, string content, ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
     {
         var iconHost = GetInstance()._iconHost;
         if (iconHost is null) return;
@@ -115,18 +122,40 @@ internal partial class TrayIconManager
 
     private static void ActivateOrRestoreMainWindow()
     {
-        if (Application.Current.MainWindow is not null)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (Application.Current.MainWindow.IsVisible)
+            var mainWindow = desktop.MainWindow;
+            if (mainWindow is not null)
             {
-                Application.Current.MainWindow.Hide();
-            }
-            else
-            {
-                Application.Current.MainWindow.Show();
-                Application.Current.MainWindow.Activate();
+                if (mainWindow.IsVisible)
+                {
+                    mainWindow.Hide();
+                }
+                else
+                {
+                    mainWindow.Show();
+                    mainWindow.Activate();
+                }
             }
         }
+    }
+
+    private void ShowWindow(object? _)
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var mainWindow = desktop.MainWindow;
+            if (mainWindow is not null)
+            {
+                mainWindow.Show();
+                mainWindow.Activate();
+            }
+        }
+    }
+
+    private void ShowNotification(object? _)
+    {
+        ShowNotificationTip("NativeTray", "This is a balloon tip from Avalonia!", ToolTipIcon.Info, 3000);
     }
 
     private void Restart(object? _)
@@ -164,22 +193,9 @@ internal partial class TrayIconManager
 
     private void Exit(object? _)
     {
-        Application.Current.Shutdown();
-    }
-}
-
-file static class ResourceHelper
-{
-    static ResourceHelper()
-    {
-        if (!UriParser.IsKnownScheme("pack"))
-            _ = PackUriHelper.UriSchemePack;
-    }
-
-    public static Stream GetStream(string uriString)
-    {
-        Uri uri = new(uriString);
-        StreamResourceInfo info = Application.GetResourceStream(uri);
-        return info?.Stream!;
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.Shutdown();
+        }
     }
 }

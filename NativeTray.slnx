@@ -1,4 +1,7 @@
-<Solution>
+﻿<Solution>
   <Project Path="src/NativeTray.Demo.WPF/NativeTray.Demo.WPF.csproj" />
+  <Project Path="src/NativeTray.Demo.WinForms/NativeTray.Demo.WinForms.csproj" />
+  <Project Path="src/NativeTray.Demo.Avalonia/NativeTray.Demo.Avalonia.csproj" />
   <Project Path="src/NativeTray/NativeTray.csproj" />
 </Solution>
+

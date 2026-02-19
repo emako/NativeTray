@@ -51,6 +51,8 @@ trayIcon.ThemeMode = TrayThemeMode.Dark;
 ## Demo
 
 - [NativeTray.Demo.WPF](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WPF) for WPF applications.
+- [NativeTray.Demo.WinForms](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WinForms) for WinForms applications.
+- [NativeTray.Demo.Avalonia](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Avalonia) for Avalonia applications.
 
 ## License
 
