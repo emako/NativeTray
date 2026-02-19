@@ -8,7 +8,8 @@ public partial class TrayIconHost
     protected void SetThemeMode(TrayThemeMode theme = TrayThemeMode.System)
     {
         // Enable dark mode for context menus if using dark theme
-        if (Environment.OSVersion.Version.Build >= 18362) // Windows 10 1903
+        if (Environment.OSVersion.Platform == PlatformID.Win32NT
+            && NTdll.GetOSVersion().Build >= 18362) // Windows 10 1903
         {
             if (theme == TrayThemeMode.System)
             {

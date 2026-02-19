@@ -13,7 +13,7 @@ internal static class NTdll
 
     public static Version GetOSVersion()
     {
-        if (RtlGetVersion(out OSVERSIONINFOEX osv) == 0)
+        if (RtlGetVersion(out OSVERSIONINFOEX osv) == NTStatus.STATUS_SUCCESS)
         {
             return new Version(osv.MajorVersion, osv.MinorVersion, osv.BuildNumber, osv.PlatformId);
         }
