@@ -6,7 +6,6 @@ public partial class App : Application
 {
     public App()
     {
-        //SystemMenuThemeManager.Apply();
         TrayIconManager.Start();
         InitializeComponent();
     }

@@ -111,9 +111,9 @@ internal partial class TrayIconManager
 
 internal partial class TrayIconManager
 {
-    private string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version!.ToString(4)}";
+    private static string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version!.ToString(4)}";
 
-    private void ActivateOrRestoreMainWindow()
+    private static void ActivateOrRestoreMainWindow()
     {
         if (Application.Current.MainWindow is not null)
         {
