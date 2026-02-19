@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <PackageId>NativeTray</PackageId>
+        <Product>NativeTray</Product>
+        <TargetFrameworks>net462;net47;net471;net472;net48;net481;netstandard2.0;netstandard2.1;net5.0;net6.0;net7.0;net8.0;net9.0;net10.0;</TargetFrameworks>
+        <UseWPF>false</UseWPF>
+        <UseWinUI>false</UseWinUI>
+        <UseWindowsForms>false</UseWindowsForms>
+        <LangVersion>preview</LangVersion>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DebugType>portable</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <IncludeSymbols>true</IncludeSymbols>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0.0</FileVersion>
+        <Version>$(VersionPrefix)1.0.0.0</Version>
+        <Authors>ema</Authors>
+        <Company>ema</Company>
+        <Description>xxx.</Description>
+        <PackageProjectUrl>https://github.com/emako/NativeTray</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/emako/NativeTray</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>windows tray tray-icon notify notify-icon</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>logo.png</PackageIcon>
+        <IsRoslynAnalyzer>true</IsRoslynAnalyzer>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <PackSatelliteAssemblies>false</PackSatelliteAssemblies>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="" />
+        <None Include="..\..\branding\logo.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+</Project>
