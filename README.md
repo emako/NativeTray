@@ -24,7 +24,7 @@ dotnet add package NativeTray
 Example usage:
 
 ```csharp
-using NativeTray;
+using System.NativeTray;
 
 var trayIcon = new TrayIconHost
 {
@@ -39,7 +39,7 @@ trayIcon.Menu = new TrayMenu
     new TrayMenuItem { Header = "Exit", Command = _ => Environment.Exit(0) }
 };
 
-trayIcon.ShowBalloonTip(3000, "Hello", "This is a balloon tip.", ToolTipIcon.Info);
+trayIcon.ShowBalloonTip(3000, "Hello", "This is a balloon tip.", TrayToolTipIcon.Info);
 ```
 
 You can set the tray icon theme mode:
