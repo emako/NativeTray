@@ -3,12 +3,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Packaging;
+using System.NativeTray;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Resources;
 
-namespace NativeTray.Demo.WPF;
+namespace WpfApp1;
 
 internal partial class TrayIconManager
 {
@@ -86,7 +87,7 @@ internal partial class TrayIconManager
         _ = GetInstance();
     }
 
-    public static void ShowNotification(string title, string content, ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
+    public static void ShowNotification(string title, string content, TrayToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
     {
         var iconHost = GetInstance()._iconHost;
         if (iconHost is null) return;

@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace NativeTray.Demo.Avalonia;
+namespace AvaloniaApp1;
 
 public partial class App : Application
 {

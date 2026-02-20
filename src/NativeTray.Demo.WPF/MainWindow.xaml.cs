@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace NativeTray.Demo.WPF;
+namespace WpfApp1;
 
 public partial class MainWindow : Window
 {

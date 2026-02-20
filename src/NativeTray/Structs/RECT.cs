@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace NativeTray.Structs;
+namespace System.NativeTray.Structs;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct RECT(int left, int top, int right, int bottom)

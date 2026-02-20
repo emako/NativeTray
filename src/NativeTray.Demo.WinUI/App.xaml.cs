@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
-using NativeTray.Demo.WinUI;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Application = Microsoft.UI.Xaml.Application;

@@ -2,10 +2,11 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.NativeTray;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace NativeTray.Demo.ConsoleApp;
+namespace ConsoleApp1;
 
 internal partial class TrayIconManager
 {
@@ -45,7 +46,7 @@ internal partial class TrayIconManager
                                     Header = "Option1-1",
                                     Command = ShowNotification,
                                 },
-                                new NativeTray.TrayMenuItem()
+                                new TrayMenuItem()
                                 {
                                     Header = "Option1-2",
                                 }
@@ -89,7 +90,7 @@ internal partial class TrayIconManager
         _ = GetInstance();
     }
 
-    public static void ShowNotificationTip(string title, string content, NativeTray.ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
+    public static void ShowNotificationTip(string title, string content, TrayToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
     {
         var iconHost = GetInstance()._iconHost;
         if (iconHost is null) return;
@@ -151,7 +152,7 @@ internal partial class TrayIconManager
 
     private void ShowNotification(object? _)
     {
-        ShowNotificationTip("NativeTray", "This is a balloon tip from Console demo!", NativeTray.ToolTipIcon.Info, 3000);
+        ShowNotificationTip("NativeTray", "This is a balloon tip from Console demo!", TrayToolTipIcon.Info, 3000);
     }
 
     private void Restart(object? _)

@@ -5,10 +5,11 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.NativeTray;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace NativeTray.Demo.Avalonia;
+namespace AvaloniaApp1;
 
 internal partial class TrayIconManager
 {
@@ -93,7 +94,7 @@ internal partial class TrayIconManager
         _ = GetInstance();
     }
 
-    public static void ShowNotificationTip(string title, string content, ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
+    public static void ShowNotificationTip(string title, string content, TrayToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
     {
         var iconHost = GetInstance()._iconHost;
         if (iconHost is null) return;
@@ -155,7 +156,7 @@ internal partial class TrayIconManager
 
     private void ShowNotification(object? _)
     {
-        ShowNotificationTip("NativeTray", "This is a balloon tip from Avalonia!", ToolTipIcon.Info, 3000);
+        ShowNotificationTip("NativeTray", "This is a balloon tip from Avalonia!", TrayToolTipIcon.Info, 3000);
     }
 
     private void Restart(object? _)

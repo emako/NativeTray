@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NativeTray;
+namespace System.NativeTray;
 
 /// <summary>
 /// Defines the interface for a tray menu item.

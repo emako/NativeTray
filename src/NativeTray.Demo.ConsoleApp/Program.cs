@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace NativeTray.Demo.ConsoleApp;
+namespace ConsoleApp1;
 
 internal static class Program
 {

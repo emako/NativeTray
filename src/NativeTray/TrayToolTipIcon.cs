@@ -1,9 +1,9 @@
-﻿namespace NativeTray;
+﻿namespace System.NativeTray;
 
 /// <summary>
 /// Defines a set of standardized icons that can be associated with a ToolTip.
 /// </summary>
-public enum ToolTipIcon
+public enum TrayToolTipIcon
 {
     /// <summary>
     /// Not a standard icon.

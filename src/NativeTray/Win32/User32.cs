@@ -1,9 +1,8 @@
-﻿using NativeTray.Structs;
-using System;
+﻿using System.NativeTray.Structs;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace NativeTray.Win32;
+namespace System.NativeTray.Win32;
 
 internal static class User32
 {

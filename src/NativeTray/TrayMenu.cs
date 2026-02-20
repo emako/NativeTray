@@ -1,12 +1,11 @@
-﻿using NativeTray.Structs;
-using NativeTray.Win32;
-using System;
+﻿using System.NativeTray.Structs;
+using System.NativeTray.Win32;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 
-namespace NativeTray;
+namespace System.NativeTray;
 
 /// <summary>
 /// Represents a context menu for the tray icon.

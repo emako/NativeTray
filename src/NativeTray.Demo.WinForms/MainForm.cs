@@ -1,7 +1,6 @@
-using System;
 using System.Windows.Forms;
 
-namespace NativeTray.Demo.WinForms;
+namespace WinFormsApp;
 
 public partial class MainForm : Form
 {
@@ -18,7 +17,7 @@ public partial class MainForm : Form
         //
         this.ClientSize = new System.Drawing.Size(800, 600);
         this.Name = "MainForm";
-        this.Text = "NativeTray.Demo.WinForms";
+        this.Text = "WinFormsApp";
         this.StartPosition = FormStartPosition.CenterScreen;
         this.ResumeLayout(false);
     }

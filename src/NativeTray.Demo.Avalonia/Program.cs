@@ -1,7 +1,7 @@
 using System;
 using Avalonia;
 
-namespace NativeTray.Demo.Avalonia;
+namespace AvaloniaApp1;
 
 class Program
 {

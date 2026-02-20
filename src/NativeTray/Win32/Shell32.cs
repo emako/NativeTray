@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace NativeTray.Win32;
+namespace System.NativeTray.Win32;
 
 internal static class Shell32
 {

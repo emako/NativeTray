@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.NativeTray;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -10,65 +11,65 @@ internal partial class TrayIconManager
 {
     private static TrayIconManager _instance = null!;
 
-    private readonly NativeTray.TrayIconHost? _iconHost = null;
+    private readonly TrayIconHost? _iconHost = null;
 
     private TrayIconManager()
     {
         using var iconStream = ResourceHelper.TryOpen("logo.ico");
-        using var icon = new NativeTray.Win32Icon(iconStream);
+        using var icon = new Win32Icon(iconStream);
 
-        _iconHost = new NativeTray.TrayIconHost()
+        _iconHost = new TrayIconHost()
         {
             ToolTipText = "NativeTray.Demo.Maui",
             Icon = icon.Handle,
-            ThemeMode = NativeTray.TrayThemeMode.System,
+            ThemeMode = TrayThemeMode.System,
             Menu =
             [
-                new NativeTray.TrayMenuItem()
+                new TrayMenuItem()
                 {
                     Header = Version,
                     IsEnabled = false,
                 },
-                new NativeTray.TraySeparator(),
-                new NativeTray.TrayMenuItem()
+                new TraySeparator(),
+                new TrayMenuItem()
                 {
                     Header = "Option",
                     Menu =
                     [
-                        new NativeTray.TrayMenuItem()
+                        new TrayMenuItem()
                         {
                             Header = "Option1",
                             Menu =
                             [
-                                new NativeTray.TrayMenuItem()
+                                new TrayMenuItem()
                                 {
                                     Header = "Option1-1",
                                     Command = ShowNotification,
                                 },
-                                new NativeTray.TrayMenuItem()
+                                new TrayMenuItem()
                                 {
                                     Header = "Option1-2",
                                 }
                             ],
                         },
-                        new NativeTray.TrayMenuItem()
+                        new TrayMenuItem()
                         {
                             Header = "Option2",
                         }
                     ],
                 },
-                new NativeTray.TrayMenuItem()
+                new TrayMenuItem()
                 {
                     Header = "Show Window",
                     Command = ShowWindow,
                 },
-                new NativeTray.TrayMenuItem()
+                new TrayMenuItem()
                 {
                     Header = "Restart",
                     Command = Restart,
                     IsBold = true,
                 },
-                new NativeTray.TrayMenuItem()
+                new TrayMenuItem()
                 {
                     Header = "Exit",
                     Command = Exit,
@@ -89,7 +90,7 @@ internal partial class TrayIconManager
         _ = GetInstance();
     }
 
-    public static void ShowNotificationTip(string title, string content, NativeTray.ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
+    public static void ShowNotificationTip(string title, string content, TrayToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
     {
         var iconHost = GetInstance()._iconHost;
         if (iconHost is null) return;
@@ -153,7 +154,7 @@ internal partial class TrayIconManager
 
     private void ShowNotification(object? _)
     {
-        ShowNotificationTip("NativeTray", "This is a balloon tip from MAUI!", NativeTray.ToolTipIcon.Info, 3000);
+        ShowNotificationTip("NativeTray", "This is a balloon tip from MAUI!", TrayToolTipIcon.Info, 3000);
     }
 
     private void Restart(object? _)

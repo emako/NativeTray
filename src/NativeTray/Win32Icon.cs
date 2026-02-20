@@ -1,8 +1,7 @@
-﻿using NativeTray.Win32;
-using System;
+﻿using System.NativeTray.Win32;
 using System.IO;
 
-namespace NativeTray;
+namespace System.NativeTray;
 
 public class Win32Icon : IDisposable
 {

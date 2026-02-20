@@ -1,7 +1,7 @@
-﻿using NativeTray.Win32;
+﻿using System.NativeTray.Win32;
 using System;
 
-namespace NativeTray;
+namespace System.NativeTray;
 
 public partial class TrayIconHost
 {

@@ -1,9 +1,8 @@
-﻿using NativeTray.Win32;
-using System;
+﻿using System.NativeTray.Win32;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace NativeTray;
+namespace System.NativeTray;
 
 /// <summary>
 /// Manages a Win32 tray icon and its context menu.
@@ -112,14 +111,14 @@ public partial class TrayIconHost : IDisposable
     /// <summary>
     /// Balloon tip icon type.
     /// </summary>
-    public ToolTipIcon BalloonTipIcon
+    public TrayToolTipIcon BalloonTipIcon
     {
         get => field;
         set
         {
             if ((int)value < 0 || (int)value > 3)
             {
-                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(ToolTipIcon));
+                throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(TrayToolTipIcon));
             }
 
             if (value != field)
@@ -386,7 +385,7 @@ public partial class TrayIconHost : IDisposable
     /// <summary>
     /// Shows a balloon tip with the specified parameters.
     /// </summary>
-    public virtual void ShowBalloonTip(int timeout, string tipTitle, string tipText, ToolTipIcon tipIcon)
+    public virtual void ShowBalloonTip(int timeout, string tipTitle, string tipText, TrayToolTipIcon tipIcon)
     {
         if (timeout < 0)
         {
@@ -400,7 +399,7 @@ public partial class TrayIconHost : IDisposable
 
         if ((int)tipIcon < 0 || (int)tipIcon > 3)
         {
-            throw new InvalidEnumArgumentException(nameof(tipIcon), (int)tipIcon, typeof(ToolTipIcon));
+            throw new InvalidEnumArgumentException(nameof(tipIcon), (int)tipIcon, typeof(TrayToolTipIcon));
         }
 
         var notifyIconData = new Shell32.NotifyIconData()
@@ -414,10 +413,10 @@ public partial class TrayIconHost : IDisposable
             szInfo = tipText,
             dwInfoFlags = tipIcon switch
             {
-                ToolTipIcon.Info => 1,
-                ToolTipIcon.Warning => 2,
-                ToolTipIcon.Error => 3,
-                ToolTipIcon.None or _ => 0,
+                TrayToolTipIcon.Info => 1,
+                TrayToolTipIcon.Warning => 2,
+                TrayToolTipIcon.Error => 3,
+                TrayToolTipIcon.None or _ => 0,
             },
         };
 

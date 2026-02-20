@@ -1,4 +1,4 @@
-﻿namespace NativeTray;
+﻿namespace System.NativeTray;
 
 /// <summary>
 /// Describes the theme mode to apply to the system menu

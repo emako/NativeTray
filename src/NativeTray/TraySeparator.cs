@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NativeTray;
+﻿namespace System.NativeTray;
 
 /// <summary>
 /// Represents a separator line in a tray context menu.

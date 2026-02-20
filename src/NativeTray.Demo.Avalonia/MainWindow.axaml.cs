@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace NativeTray.Demo.Avalonia;
+namespace AvaloniaApp1;
 
 public partial class MainWindow : Window
 {
@@ -13,7 +13,7 @@ public partial class MainWindow : Window
     {
         Width = 800;
         Height = 600;
-        Title = "NativeTray.Demo.Avalonia";
+        Title = "AvaloniaApp1";
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
 }

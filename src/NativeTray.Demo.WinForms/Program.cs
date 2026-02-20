@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace NativeTray.Demo.WinForms;
+namespace WinFormsApp;
 
 internal static class Program
 {

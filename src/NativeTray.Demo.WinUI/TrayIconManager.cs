@@ -1,13 +1,13 @@
 using Microsoft.UI.Xaml;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.NativeTray;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using WinUIApp1;
 
-namespace NativeTray.Demo.WinUI;
+namespace WinUIApp1;
 
 internal partial class TrayIconManager
 {
@@ -92,7 +92,7 @@ internal partial class TrayIconManager
         _ = GetInstance();
     }
 
-    public static void ShowNotificationTip(string title, string content, ToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
+    public static void ShowNotificationTip(string title, string content, TrayToolTipIcon icon = default, int timeout = 5000, Action? clickEvent = null, Action? closeEvent = null)
     {
         var iconHost = GetInstance()._iconHost;
         if (iconHost is null) return;
@@ -143,7 +143,7 @@ internal partial class TrayIconManager
 
     private void ShowNotification(object? _)
     {
-        ShowNotificationTip("NativeTray", "This is a balloon tip from WinUI!", ToolTipIcon.Info, 3000);
+        ShowNotificationTip("NativeTray", "This is a balloon tip from WinUI!", TrayToolTipIcon.Info, 3000);
     }
 
     private void Restart(object? _)

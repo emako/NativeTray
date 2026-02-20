@@ -1,7 +1,6 @@
-﻿using NativeTray.Win32;
-using System;
+﻿using System.NativeTray.Win32;
 
-namespace NativeTray;
+namespace System.NativeTray;
 
 public static class DpiAware
 {
