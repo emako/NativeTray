@@ -50,9 +50,11 @@ trayIcon.ThemeMode = TrayThemeMode.Dark;
 
 ## Demo
 
-- [NativeTray.Demo.WPF](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WPF) for WPF applications.
-- [NativeTray.Demo.WinForms](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WinForms) for WinForms applications.
-- [NativeTray.Demo.Avalonia](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Avalonia) for Avalonia applications.
+- [NativeTray.Demo.WPF](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WPF) for [WPF](https://github.com/dotnet/wpf) applications.
+- [NativeTray.Demo.WinForms](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WinForms) for [WinForms](https://github.com/dotnet/winforms) applications.
+- [NativeTray.Demo.Avalonia](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Avalonia) for [Avalonia](https://github.com/AvaloniaUI/Avalonia) applications.
+- [NativeTray.Demo.WinUI](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WinUI) for [WinUI](https://github.com/microsoft/microsoft-ui-xaml) applications.
+- [NativeTray.Demo.Maui](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Maui) for [MAUI](https://github.com/dotnet/maui) applications.
 
 ## License
 
