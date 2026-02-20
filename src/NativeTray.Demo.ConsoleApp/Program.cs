@@ -1,4 +1,5 @@
 using System;
+using System.NativeTray;
 using System.Threading;
 
 namespace ConsoleApp1;
@@ -11,13 +12,16 @@ internal static class Program
         Console.WriteLine("NativeTray Console Demo starting...");
         Console.WriteLine("Tray icon will appear in the system tray. Use the tray menu to Exit.");
 
+        // Set process DPI awareness to ensure the tray icon looks sharp on high-DPI displays
+        DpiAware.SetProcessDpiAwareness();
+
         // Start tray icon
         TrayIconManager.Start();
 
         // Keep the console app running until exit
         using var mre = new ManualResetEventSlim(false);
 
-        Console.CancelKeyPress += (s, e) =>
+        Console.CancelKeyPress += (_, e) =>
         {
             e.Cancel = true;
             Console.WriteLine("Exiting...");
