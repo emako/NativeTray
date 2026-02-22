@@ -9,7 +9,6 @@
         <UseWindowsForms>false</UseWindowsForms>
         <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DebugType>portable</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <IncludeSymbols>true</IncludeSymbols>
