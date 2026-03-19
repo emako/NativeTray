@@ -240,6 +240,12 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
             return true;
         }
 
+        if (icon is Win32Image win32Image && win32Image.Handle != IntPtr.Zero)
+        {
+            hBitmap = win32Image.Handle;
+            return true;
+        }
+
         if (icon is Win32Icon win32Icon && win32Icon.Handle != IntPtr.Zero)
         {
             return TryCreateBitmapFromIcon(win32Icon.Handle, out hBitmap, out shouldDisposeBitmap);
