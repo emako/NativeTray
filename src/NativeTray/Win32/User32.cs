@@ -80,6 +80,10 @@ internal static class User32
     public static extern nint CopyIcon(nint hIcon);
 
     [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetIconInfo(nint hIcon, out ICONINFO piconinfo);
+
+    [DllImport("user32.dll", SetLastError = true)]
     public static extern nint CreatePopupMenu();
 
     [DllImport("user32.dll", SetLastError = true)]
@@ -206,6 +210,18 @@ internal static class User32
         public nint dwItemData;
         public string dwTypeData;
         public uint cch;
+        public nint hbmpItem;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ICONINFO
+    {
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool fIcon;
+        public uint xHotspot;
+        public uint yHotspot;
+        public nint hbmMask;
+        public nint hbmColor;
     }
 
     public enum WindowMessage

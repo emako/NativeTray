@@ -84,11 +84,12 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
 
         Opening?.Invoke(this, EventArgs.Empty);
 
-        Dictionary<uint, ITrayMenuItemBase> idToItem = new();
-        List<nint> allMenus = new();
+        Dictionary<uint, ITrayMenuItemBase> idToItem = [];
+        List<nint> allMenus = [];
+        List<nint> allBitmaps = [];
         uint currentId = 1000;
 
-        nint hMenu = BuildMenu(_items, idToItem, allMenus, ref currentId);
+        nint hMenu = BuildMenu(_items, idToItem, allMenus, allBitmaps, ref currentId);
         if (hMenu == IntPtr.Zero) return;
 
         _ = User32.GetCursorPos(out POINT pt);
@@ -113,15 +114,21 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
             User32.DestroyMenu(menu);
         }
 
+        foreach (nint bitmap in allBitmaps)
+        {
+            _ = Gdi32.DeleteObject(bitmap);
+        }
+
         Closed?.Invoke(this, EventArgs.Empty);
     }
 
-    private static nint BuildMenu(IList<ITrayMenuItemBase> items, Dictionary<uint, ITrayMenuItemBase> idToItem, List<nint> allMenus, ref uint currentId)
+    private static nint BuildMenu(IList<ITrayMenuItemBase> items, Dictionary<uint, ITrayMenuItemBase> idToItem, List<nint> allMenus, List<nint> allBitmaps, ref uint currentId)
     {
         nint hMenu = User32.CreatePopupMenu();
         if (hMenu == IntPtr.Zero) return IntPtr.Zero;
 
         allMenus.Add(hMenu);
+        uint menuPosition = 0;
 
         foreach (ITrayMenuItemBase item in items)
         {
@@ -130,6 +137,7 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
             if (item.Header == "-" || item is TraySeparator)
             {
                 _ = User32.AppendMenu(hMenu, (uint)User32.MenuFlags.MF_SEPARATOR, 0, string.Empty);
+                menuPosition++;
             }
             else
             {
@@ -140,7 +148,7 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
                 if (hasSubmenu)
                 {
                     // Recursively build the submenu
-                    nint hSubMenu = BuildMenu(submenu!.Items, idToItem, allMenus, ref currentId);
+                    nint hSubMenu = BuildMenu(submenu!.Items, idToItem, allMenus, allBitmaps, ref currentId);
                     if (hSubMenu != IntPtr.Zero)
                     {
                         var flags = User32.MenuFlags.MF_STRING | User32.MenuFlags.MF_POPUP;
@@ -149,6 +157,8 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
                             flags |= User32.MenuFlags.MF_DISABLED | User32.MenuFlags.MF_GRAYED;
 
                         _ = User32.AppendMenu(hMenu, (uint)flags, hSubMenu, item.Header!);
+                        ApplyMenuItemBitmap(hMenu, menuPosition, item, allBitmaps);
+                        menuPosition++;
                     }
                 }
                 else
@@ -162,6 +172,7 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
                         flags |= User32.MenuFlags.MF_CHECKED;
 
                     _ = User32.AppendMenu(hMenu, (uint)flags, currentId, item.Header!);
+                    ApplyMenuItemBitmap(hMenu, menuPosition, item, allBitmaps);
 
                     if (item.IsBold)
                     {
@@ -183,10 +194,78 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
 
                     idToItem[currentId] = item;
                     currentId++;
+                    menuPosition++;
                 }
             }
         }
 
         return hMenu;
+    }
+
+    private static void ApplyMenuItemBitmap(nint hMenu, uint menuPosition, ITrayMenuItemBase item, List<nint> tempBitmaps)
+    {
+        if (!TryGetMenuBitmap(item.Icon, out nint hBitmap, out bool shouldDisposeBitmap))
+            return;
+
+        var menuItemInfo = new User32.MENUITEMINFO
+        {
+            cbSize = (uint)Marshal.SizeOf<User32.MENUITEMINFO>(),
+            fMask = (uint)User32.MenuItemMask.MIIM_BITMAP,
+            hbmpItem = hBitmap,
+        };
+
+        bool setResult = User32.SetMenuItemInfo(hMenu, menuPosition, true, ref menuItemInfo);
+
+        if (!setResult && shouldDisposeBitmap)
+        {
+            _ = Gdi32.DeleteObject(hBitmap);
+            return;
+        }
+
+        if (setResult && shouldDisposeBitmap)
+            tempBitmaps.Add(hBitmap);
+    }
+
+    private static bool TryGetMenuBitmap(object? icon, out nint hBitmap, out bool shouldDisposeBitmap)
+    {
+        hBitmap = IntPtr.Zero;
+        shouldDisposeBitmap = false;
+
+        if (icon is null)
+            return false;
+
+        if (icon is nint directBitmap && directBitmap != IntPtr.Zero)
+        {
+            hBitmap = directBitmap;
+            return true;
+        }
+
+        if (icon is Win32Icon win32Icon && win32Icon.Handle != IntPtr.Zero)
+        {
+            return TryCreateBitmapFromIcon(win32Icon.Handle, out hBitmap, out shouldDisposeBitmap);
+        }
+
+        return false;
+    }
+
+    private static bool TryCreateBitmapFromIcon(nint hIcon, out nint hBitmap, out bool shouldDisposeBitmap)
+    {
+        hBitmap = IntPtr.Zero;
+        shouldDisposeBitmap = false;
+
+        if (!User32.GetIconInfo(hIcon, out User32.ICONINFO iconInfo))
+            return false;
+
+        nint selectedBitmap = iconInfo.hbmColor != IntPtr.Zero ? iconInfo.hbmColor : iconInfo.hbmMask;
+        if (selectedBitmap == IntPtr.Zero)
+            return false;
+
+        nint unusedBitmap = selectedBitmap == iconInfo.hbmColor ? iconInfo.hbmMask : iconInfo.hbmColor;
+        if (unusedBitmap != IntPtr.Zero)
+            _ = Gdi32.DeleteObject(unusedBitmap);
+
+        hBitmap = selectedBitmap;
+        shouldDisposeBitmap = true;
+        return true;
     }
 }
