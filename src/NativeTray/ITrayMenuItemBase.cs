@@ -19,6 +19,11 @@ public interface ITrayMenuItemBase
 
     /// <summary>
     /// Gets or sets the text displayed for the menu item.
+    /// You can include '\t' to show right-aligned shortcut text (for example, "Open\tCtrl+O").
+    /// The string can contain the escape characters \t and \a.
+    /// The \t character inserts a tab in the string and is used to align text in columns.
+    /// The \a character aligns all text that follows it flush right to the menu bar or pop-up menu. (But it does not take effect here)
+    /// https://learn.microsoft.com/en-us/windows/win32/menurc/menuitem-statement
     /// </summary>
     public string? Header { get; set; }
 
