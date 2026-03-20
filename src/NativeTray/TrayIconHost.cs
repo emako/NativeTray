@@ -154,12 +154,14 @@ public partial class TrayIconHost : IDisposable
     public TrayMenu Menu { get; set; } = null!;
 
     /// <summary>
-    /// Controls the horizontal alignment of the tray context menu relative to the popup point.
+    /// Gets or sets how the tray context menu is horizontally aligned relative to the popup anchor point.
+    /// This controls whether the menu's left edge, center, or right edge is placed at the popup location.
     /// </summary>
     public TrayContextMenuHorizontalAlignment MenuHorizontalAlignment { get; set; } = TrayContextMenuHorizontalAlignment.Left;
 
     /// <summary>
-    /// Controls the vertical alignment of the tray context menu relative to the popup point.
+    /// Gets or sets how the tray context menu is vertically aligned relative to the popup anchor point.
+    /// This controls whether the menu's top edge, center, or bottom edge is placed at the popup location.
     /// </summary>
     public TrayContextMenuVerticalAlignment MenuVerticalAlignment { get; set; } = TrayContextMenuVerticalAlignment.Top;
 

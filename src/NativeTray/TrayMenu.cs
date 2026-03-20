@@ -98,7 +98,9 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
         _ = User32.GetCursorPos(out POINT pt);
 
         User32.TrackPopupMenuFlags flag =
+            // Return the selected command ID directly instead of relying on WM_COMMAND dispatch.
             User32.TrackPopupMenuFlags.TPM_RETURNCMD |
+            // Tray context menus are standard vertical popup menus.
             User32.TrackPopupMenuFlags.TPM_VERTICAL |
             GetHorizontalAlignmentFlag(horizontalAlignment) |
             GetVerticalAlignmentFlag(verticalAlignment);
