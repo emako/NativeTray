@@ -53,7 +53,7 @@ public sealed class TraySeparator : ITrayMenuItemBase
         set => throw new NotImplementedException();
     }
 
-    public Action<object?>? Command
+    public ITrayCommand? Command
     {
         get => null;
         set => throw new NotImplementedException();

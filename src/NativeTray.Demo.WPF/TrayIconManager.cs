@@ -63,13 +63,13 @@ internal partial class TrayIconManager
                 new TrayMenuItem()
                 {
                     Header = "Restart",
-                    Command = Restart,
+                    Command = new TrayRelayCommand(Restart),
                     IsBold = true, // Test the bold style
                 },
                 new TrayMenuItem()
                 {
                     Header = "Exit",
-                    Command = Exit,
+                    Command = new TrayRelayCommand(Exit),
                     Icon = new Win32Image(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/close.png"))
                     {
                         ShowAsMonochrome = true,

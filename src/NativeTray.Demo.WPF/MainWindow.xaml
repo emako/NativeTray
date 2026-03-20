@@ -9,10 +9,9 @@
     xmlns:local="clr-namespace:WpfApp1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="WpfApp1"
-    Width="1200"
-    Height="800"
+    Width="300"
+    Height="300"
     d:Background="#232323"
-    d:Height="2400"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>

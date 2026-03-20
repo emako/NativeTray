@@ -105,7 +105,7 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
 
         if (selected != 0 && idToItem.TryGetValue(selected, out ITrayMenuItemBase? clickedItem))
         {
-            clickedItem.Command?.Invoke(clickedItem.CommandParameter);
+            clickedItem.Command?.Execute(clickedItem.CommandParameter);
         }
 
         // Destroy all menus (main menu and submenus)

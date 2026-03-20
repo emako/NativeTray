@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace System.NativeTray;
+﻿namespace System.NativeTray;
 
 /// <summary>
 /// Defines the interface for a tray menu item.
@@ -55,7 +53,7 @@ public interface ITrayMenuItemBase
     /// <summary>
     /// Gets or sets the command to execute when the menu item is clicked.
     /// </summary>
-    public Action<object?>? Command { get; set; }
+    public ITrayCommand? Command { get; set; }
 
     /// <summary>
     /// Gets or sets the parameter to pass to the command.
