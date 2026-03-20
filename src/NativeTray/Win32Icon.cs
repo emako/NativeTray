@@ -1,11 +1,16 @@
-﻿using System.NativeTray.Win32;
+﻿using Microsoft.Win32.SafeHandles;
 using System.IO;
+using System.NativeTray.Win32;
 
 namespace System.NativeTray;
 
 public class Win32Icon : IDisposable
 {
-    public nint Handle { get; private set; }
+    private readonly SafeHIconHandle _handle = new();
+
+    public SafeHIconHandle SafeHandle => _handle;
+
+    public nint Handle => TryGetHandle(out nint handle) ? handle : IntPtr.Zero;
 
     public Win32Icon(Stream stream)
     {
@@ -48,7 +53,7 @@ public class Win32Icon : IDisposable
         if (hIcon == IntPtr.Zero)
             throw new InvalidOperationException("CreateIconFromResourceEx failed.");
 
-        Handle = hIcon;
+        _handle = new SafeHIconHandle(hIcon);
     }
 
     internal bool TryCreateMenuBitmap(out nint hBitmap, out bool shouldDisposeBitmap)
@@ -56,10 +61,10 @@ public class Win32Icon : IDisposable
         hBitmap = IntPtr.Zero;
         shouldDisposeBitmap = false;
 
-        if (Handle == IntPtr.Zero)
+        if (!TryGetHandle(out nint hIcon))
             return false;
 
-        if (!User32.GetIconInfo(Handle, out User32.ICONINFO iconInfo))
+        if (!User32.GetIconInfo(hIcon, out User32.ICONINFO iconInfo))
             return false;
 
         nint selectedBitmap = iconInfo.hbmColor != IntPtr.Zero ? iconInfo.hbmColor : iconInfo.hbmMask;
@@ -75,13 +80,37 @@ public class Win32Icon : IDisposable
         return true;
     }
 
+    private bool TryGetHandle(out nint handle)
+    {
+        handle = IntPtr.Zero;
+
+        if (_handle.IsClosed || _handle.IsInvalid)
+            return false;
+
+        handle = _handle.DangerousGetHandle();
+        return handle != IntPtr.Zero;
+    }
+
     public void Dispose()
     {
-        if (Handle != IntPtr.Zero)
-        {
-            _ = User32.DestroyIcon(Handle);
-            Handle = IntPtr.Zero;
-        }
+        _handle.Dispose();
         GC.SuppressFinalize(this);
+    }
+}
+
+public sealed class SafeHIconHandle : SafeHandleZeroOrMinusOneIsInvalid
+{
+    public SafeHIconHandle() : base(true)
+    {
+    }
+
+    public SafeHIconHandle(nint preexistingHandle, bool ownsHandle = true) : base(ownsHandle)
+    {
+        SetHandle(preexistingHandle);
+    }
+
+    protected override bool ReleaseHandle()
+    {
+        return User32.DestroyIcon(handle) != 0;
     }
 }

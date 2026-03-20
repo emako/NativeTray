@@ -1,3 +1,4 @@
+using Microsoft.Win32.SafeHandles;
 using System.IO;
 using System.NativeTray.Win32;
 using System.Runtime.InteropServices;
@@ -8,8 +9,11 @@ namespace System.NativeTray;
 public class Win32Image : IDisposable
 {
     private readonly byte[] _imageBytes;
+    private readonly SafeHBitmapHandle _handle = new();
 
-    public nint Handle { get; private set; }
+    public SafeHBitmapHandle SafeHandle => _handle;
+
+    public nint Handle => TryGetHandle(out nint handle) ? handle : IntPtr.Zero;
 
     /// <summary>
     /// Gets or sets whether the image should be rendered as a monochrome menu icon.
@@ -51,7 +55,7 @@ public class Win32Image : IDisposable
             if (createHBitmapResult != 0 || hBitmap == IntPtr.Zero)
                 throw new InvalidOperationException($"GdipCreateHBITMAPFromBitmap failed with status code {createHBitmapResult}.");
 
-            Handle = hBitmap;
+            _handle = new SafeHBitmapHandle(hBitmap);
         }
         finally
         {
@@ -68,12 +72,12 @@ public class Win32Image : IDisposable
         hBitmap = IntPtr.Zero;
         shouldDisposeBitmap = false;
 
-        if (Handle == IntPtr.Zero)
+        if (!TryGetHandle(out nint nativeHandle))
             return false;
 
         if (!ShowAsMonochrome)
         {
-            hBitmap = Handle;
+            hBitmap = nativeHandle;
             return true;
         }
 
@@ -187,17 +191,41 @@ public class Win32Image : IDisposable
         return effectiveTheme == TrayThemeMode.Dark ? 0xFFFFFFFFu : 0xFF000000u;
     }
 
+    private bool TryGetHandle(out nint handle)
+    {
+        handle = IntPtr.Zero;
+
+        if (_handle.IsClosed || _handle.IsInvalid)
+            return false;
+
+        handle = _handle.DangerousGetHandle();
+        return handle != IntPtr.Zero;
+    }
+
     public void Dispose()
     {
-        if (Handle != IntPtr.Zero)
-        {
-            _ = Gdi32.DeleteObject(Handle);
-            Handle = IntPtr.Zero;
-        }
+        _handle.Dispose();
 
         GC.SuppressFinalize(this);
     }
 
     [DllImport("ole32.dll")]
     private static extern int CreateStreamOnHGlobal(nint hGlobal, bool fDeleteOnRelease, out IStream ppstm);
+}
+
+public sealed class SafeHBitmapHandle : SafeHandleZeroOrMinusOneIsInvalid
+{
+    public SafeHBitmapHandle() : base(true)
+    {
+    }
+
+    public SafeHBitmapHandle(nint preexistingHandle, bool ownsHandle = true) : base(ownsHandle)
+    {
+        SetHandle(preexistingHandle);
+    }
+
+    protected override bool ReleaseHandle()
+    {
+        return Gdi32.DeleteObject(handle);
+    }
 }
