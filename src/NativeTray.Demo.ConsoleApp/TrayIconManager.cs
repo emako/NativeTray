@@ -55,6 +55,7 @@ internal partial class TrayIconManager
                         new TrayMenuItem()
                         {
                             Header = "Option2",
+                            IsChecked = true,
                         }
                     ],
                 },
@@ -65,9 +66,14 @@ internal partial class TrayIconManager
                 },
                 new TrayMenuItem()
                 {
+                    Header = "Show Notification\ttest",
+                    Command = new TrayRelayCommand(ShowNotification),
+                    IsBold = true,
+                },
+                new TrayMenuItem()
+                {
                     Header = "Restart",
                     Command = new TrayRelayCommand(Restart),
-                    IsBold = true,
                 },
                 new TrayMenuItem()
                 {

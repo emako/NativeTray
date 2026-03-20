@@ -142,7 +142,7 @@ internal partial class TrayIconManager
 
     private void ShowBalloonTip(object? commandParameter)
     {
-        _iconHost?.ShowBalloonTip(3000, "Balloon Tip Title", "This is a balloon tip shown from NativeTray.Demo.WPF!", TrayToolTipIcon.Info);
+        _iconHost?.ShowBalloonTip(3000, "Balloon Tip Title", "This is a balloon tip shown from WPF!", TrayToolTipIcon.Info);
     }
 
     private void Restart(object? commandParameter)
