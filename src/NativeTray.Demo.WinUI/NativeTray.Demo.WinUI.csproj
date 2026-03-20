@@ -30,6 +30,7 @@
         <WindowsAppSdkUndockedRegFreeWinRTInitialize>false</WindowsAppSdkUndockedRegFreeWinRTInitialize>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
