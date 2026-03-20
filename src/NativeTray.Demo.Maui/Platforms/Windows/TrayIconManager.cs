@@ -147,17 +147,17 @@ internal partial class TrayIconManager
         }
     }
 
-    private void ShowWindow(object? _)
+    private void ShowWindow(object? commandParameter)
     {
         ActivateOrRestoreMainWindow();
     }
 
-    private void ShowNotification(object? _)
+    private void ShowNotification(object? commandParameter)
     {
         ShowNotificationTip("NativeTray", "This is a balloon tip from MAUI!", TrayToolTipIcon.Info, 3000);
     }
 
-    private void Restart(object? _)
+    private void Restart(object? commandParameter)
     {
         try
         {
@@ -190,7 +190,7 @@ internal partial class TrayIconManager
         }
     }
 
-    private void Exit(object? _)
+    private void Exit(object? commandParameter)
     {
         Application.Current?.Quit();
     }

@@ -154,12 +154,12 @@ internal partial class TrayIconManager
         }
     }
 
-    private void ShowNotification(object? _)
+    private void ShowNotification(object? commandParameter)
     {
         ShowNotificationTip("NativeTray", "This is a balloon tip from Avalonia!", TrayToolTipIcon.Info, 3000);
     }
 
-    private void Restart(object? _)
+    private void Restart(object? commandParameter)
     {
         try
         {
@@ -192,7 +192,7 @@ internal partial class TrayIconManager
         }
     }
 
-    private void Exit(object? _)
+    private void Exit(object? commandParameter)
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

@@ -150,12 +150,12 @@ internal partial class TrayIconManager
         ActivateOrRestoreMainWindow();
     }
 
-    private void ShowNotification(object? _)
+    private void ShowNotification(object? commandParameter)
     {
         ShowNotificationTip("NativeTray", "This is a balloon tip from Console demo!", TrayToolTipIcon.Info, 3000);
     }
 
-    private void Restart(object? _)
+    private void Restart(object? commandParameter)
     {
         try
         {
@@ -188,7 +188,7 @@ internal partial class TrayIconManager
         }
     }
 
-    private void Exit(object? _)
+    private void Exit(object? commandParameter)
     {
         Environment.Exit(0);
     }

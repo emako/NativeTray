@@ -134,7 +134,7 @@ internal partial class TrayIconManager
         }
     }
 
-    private void Restart(object? _)
+    private void Restart(object? commandParameter)
     {
         try
         {
@@ -167,7 +167,7 @@ internal partial class TrayIconManager
         }
     }
 
-    private void Exit(object? _)
+    private void Exit(object? commandParameter)
     {
         Application.Current.Shutdown();
     }
