@@ -16,9 +16,9 @@
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <AssemblyVersion>1.0.0.0</AssemblyVersion>
-        <FileVersion>1.0.0.0</FileVersion>
-        <Version>$(VersionPrefix)1.0.0.0</Version>
+        <AssemblyVersion>2.0.0.0</AssemblyVersion>
+        <FileVersion>2.0.0.0</FileVersion>
+        <Version>$(VersionPrefix)2.0.0.0</Version>
         <Authors>ema</Authors>
         <Company>ema</Company>
         <Description>NativeTray is a modern, easy-to-use library for displaying tray icons (NotifyIcon) in .NET applications. It supports WPF, WinForms, and other .NET platforms, providing non-intrusive system notifications and quick access functionality in the Windows taskbar.</Description>
@@ -30,7 +30,6 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>logo.png</PackageIcon>
         <IsRoslynAnalyzer>true</IsRoslynAnalyzer>
-        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IncludeDocumentationFile>true</IncludeDocumentationFile>
         <NoWarn>$(NoWarn);CA1416;CA1512;CS1574;CS1591</NoWarn>
