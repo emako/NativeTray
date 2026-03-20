@@ -240,38 +240,12 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
             return true;
         }
 
-        if (icon is Win32Image win32Image && win32Image.Handle != IntPtr.Zero)
-        {
-            hBitmap = win32Image.Handle;
-            return true;
-        }
+        if (icon is Win32Image win32Image)
+            return win32Image.TryCreateMenuBitmap(out hBitmap, out shouldDisposeBitmap);
 
-        if (icon is Win32Icon win32Icon && win32Icon.Handle != IntPtr.Zero)
-        {
-            return TryCreateBitmapFromIcon(win32Icon.Handle, out hBitmap, out shouldDisposeBitmap);
-        }
+        if (icon is Win32Icon win32Icon)
+            return win32Icon.TryCreateMenuBitmap(out hBitmap, out shouldDisposeBitmap);
 
         return false;
-    }
-
-    private static bool TryCreateBitmapFromIcon(nint hIcon, out nint hBitmap, out bool shouldDisposeBitmap)
-    {
-        hBitmap = IntPtr.Zero;
-        shouldDisposeBitmap = false;
-
-        if (!User32.GetIconInfo(hIcon, out User32.ICONINFO iconInfo))
-            return false;
-
-        nint selectedBitmap = iconInfo.hbmColor != IntPtr.Zero ? iconInfo.hbmColor : iconInfo.hbmMask;
-        if (selectedBitmap == IntPtr.Zero)
-            return false;
-
-        nint unusedBitmap = selectedBitmap == iconInfo.hbmColor ? iconInfo.hbmMask : iconInfo.hbmColor;
-        if (unusedBitmap != IntPtr.Zero)
-            _ = Gdi32.DeleteObject(unusedBitmap);
-
-        hBitmap = selectedBitmap;
-        shouldDisposeBitmap = true;
-        return true;
     }
 }

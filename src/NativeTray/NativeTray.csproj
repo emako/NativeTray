@@ -32,7 +32,7 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IncludeDocumentationFile>true</IncludeDocumentationFile>
-        <NoWarn>$(NoWarn);CA1512;CS1574;CS1591</NoWarn>
+        <NoWarn>$(NoWarn);CA1416;CA1512;CS1574;CS1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

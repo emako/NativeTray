@@ -10,11 +10,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="logo.ico" />
+        <None Remove="*.png" />
+        <None Remove="*.ico" />
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="logo.ico" />
+        <Resource Include="*.png" />
+        <Resource Include="*.ico" />
     </ItemGroup>
 
     <ItemGroup>

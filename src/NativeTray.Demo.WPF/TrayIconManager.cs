@@ -70,6 +70,10 @@ internal partial class TrayIconManager
                 {
                     Header = "Exit",
                     Command = Exit,
+                    Icon = new Win32Image(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/close.png"))
+                    {
+                        ShowAsMonochrome = true,
+                    },
                 }
             ],
         };

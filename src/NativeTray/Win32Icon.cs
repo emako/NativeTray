@@ -51,6 +51,30 @@ public class Win32Icon : IDisposable
         Handle = hIcon;
     }
 
+    internal bool TryCreateMenuBitmap(out nint hBitmap, out bool shouldDisposeBitmap)
+    {
+        hBitmap = IntPtr.Zero;
+        shouldDisposeBitmap = false;
+
+        if (Handle == IntPtr.Zero)
+            return false;
+
+        if (!User32.GetIconInfo(Handle, out User32.ICONINFO iconInfo))
+            return false;
+
+        nint selectedBitmap = iconInfo.hbmColor != IntPtr.Zero ? iconInfo.hbmColor : iconInfo.hbmMask;
+        if (selectedBitmap == IntPtr.Zero)
+            return false;
+
+        nint unusedBitmap = selectedBitmap == iconInfo.hbmColor ? iconInfo.hbmMask : iconInfo.hbmColor;
+        if (unusedBitmap != IntPtr.Zero)
+            _ = Gdi32.DeleteObject(unusedBitmap);
+
+        hBitmap = selectedBitmap;
+        shouldDisposeBitmap = true;
+        return true;
+    }
+
     public void Dispose()
     {
         if (Handle != IntPtr.Zero)
