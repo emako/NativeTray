@@ -40,7 +40,7 @@ public class Win32Image : IDisposable
 
         try
         {
-            int createStreamResult = CreateStreamOnHGlobal(IntPtr.Zero, true, out imageStream);
+            int createStreamResult = Ole32.CreateStreamOnHGlobal(IntPtr.Zero, true, out imageStream);
             if (createStreamResult != 0 || imageStream is null)
                 throw new InvalidOperationException($"CreateStreamOnHGlobal failed with HRESULT 0x{createStreamResult:X8}.");
 
@@ -96,7 +96,7 @@ public class Win32Image : IDisposable
 
         try
         {
-            int createStreamResult = CreateStreamOnHGlobal(IntPtr.Zero, true, out imageStream);
+            int createStreamResult = Ole32.CreateStreamOnHGlobal(IntPtr.Zero, true, out imageStream);
             if (createStreamResult != 0 || imageStream is null)
                 return false;
 
@@ -208,9 +208,6 @@ public class Win32Image : IDisposable
 
         GC.SuppressFinalize(this);
     }
-
-    [DllImport("ole32.dll")]
-    private static extern int CreateStreamOnHGlobal(nint hGlobal, bool fDeleteOnRelease, out IStream ppstm);
 }
 
 public sealed class SafeHBitmapHandle : SafeHandleZeroOrMinusOneIsInvalid
