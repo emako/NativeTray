@@ -78,7 +78,7 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
 
     public bool Remove(ITrayMenuItemBase item) => _items.Remove(item);
 
-    public void Open(nint hWnd)
+    public void Open(nint hWnd, TrayContextMenuAlignment alignment = TrayContextMenuAlignment.Left)
     {
         if (_items.Count == 0) return;
 
@@ -97,7 +97,7 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
         User32.TrackPopupMenuFlags flag =
             User32.TrackPopupMenuFlags.TPM_RETURNCMD |
             User32.TrackPopupMenuFlags.TPM_VERTICAL |
-            User32.TrackPopupMenuFlags.TPM_LEFTALIGN;
+            GetHorizontalAlignmentFlag(alignment);
 
         _ = User32.SetForegroundWindow(hWnd);
         uint selected = User32.TrackPopupMenuEx(hMenu, (uint)flag, pt.X, pt.Y, hWnd, IntPtr.Zero);
@@ -120,6 +120,16 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
         }
 
         Closed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private static User32.TrackPopupMenuFlags GetHorizontalAlignmentFlag(TrayContextMenuAlignment alignment)
+    {
+        return alignment switch
+        {
+            TrayContextMenuAlignment.Center => User32.TrackPopupMenuFlags.TPM_CENTERALIGN,
+            TrayContextMenuAlignment.Right => User32.TrackPopupMenuFlags.TPM_RIGHTALIGN,
+            _ => User32.TrackPopupMenuFlags.TPM_LEFTALIGN,
+        };
     }
 
     private static nint BuildMenu(IList<ITrayMenuItemBase> items, Dictionary<uint, ITrayMenuItemBase> idToItem, List<nint> allMenus, List<nint> allBitmaps, ref uint currentId)
