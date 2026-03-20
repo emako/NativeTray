@@ -14,11 +14,13 @@ public class TrayRelayCommand(Action<object?> execute, Func<bool>? canExecute = 
     private readonly Action<object?> _execute =
         execute ?? throw new ArgumentNullException(nameof(execute));
 
+    /// <inheritdoc/>
     public bool CanExecute()
     {
         return canExecute?.Invoke() ?? true;
     }
 
+    /// <inheritdoc/>
     public void Execute(object? commandParameter)
     {
         if (CanExecute())
@@ -33,9 +35,14 @@ public class TrayRelayCommand(Action<object?> execute, Func<bool>? canExecute = 
 /// </summary>
 public interface ITrayCommand
 {
-    // Returns true if the command can currently be executed.
+    /// <summary>
+    /// Returns true if the command can currently be executed.
+    /// </summary>
     public bool CanExecute();
 
-    // Executes the command's action.
+    /// <summary>
+    /// Executes the command's action.
+    /// </summary>
+    /// <param name="commandParameter">command's parameter</param>
     public void Execute(object? commandParameter);
 }
