@@ -156,7 +156,12 @@ public partial class TrayIconHost : IDisposable
     /// <summary>
     /// Controls the horizontal alignment of the tray context menu relative to the popup point.
     /// </summary>
-    public TrayContextMenuAlignment MenuAlignment { get; set; } = TrayContextMenuAlignment.Left;
+    public TrayContextMenuHorizontalAlignment MenuHorizontalAlignment { get; set; } = TrayContextMenuHorizontalAlignment.Left;
+
+    /// <summary>
+    /// Controls the vertical alignment of the tray context menu relative to the popup point.
+    /// </summary>
+    public TrayContextMenuVerticalAlignment MenuVerticalAlignment { get; set; } = TrayContextMenuVerticalAlignment.Top;
 
     /// <summary>
     /// Occurs when the user preference (such as theme) changes.
@@ -376,7 +381,7 @@ public partial class TrayIconHost : IDisposable
     /// </summary>
     public virtual void ShowContextMenu()
     {
-        Menu?.Open(hWnd, MenuAlignment);
+        Menu?.Open(hWnd, MenuHorizontalAlignment, MenuVerticalAlignment);
     }
 
     /// <summary>
