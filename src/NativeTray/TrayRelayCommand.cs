@@ -8,6 +8,8 @@
 /// <param name="canExecute">
 /// Optional predicate that determines whether the command can currently execute.
 /// If <c>null</c>, the command is always considered executable.
+/// When used by tray menu items, returning <c>false</c> will also cause the menu item
+/// to be shown as disabled (grayed out).
 /// </param>
 public class TrayRelayCommand(Action<object?> execute, Func<bool>? canExecute = null) : ITrayCommand
 {
@@ -37,6 +39,8 @@ public interface ITrayCommand
 {
     /// <summary>
     /// Returns true if the command can currently be executed.
+    /// In tray menus, this affects both execution and presentation: if this method
+    /// returns false, the menu item will not execute and will be shown as disabled.
     /// </summary>
     public bool CanExecute();
 

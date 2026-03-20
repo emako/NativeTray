@@ -111,7 +111,13 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
 
         if (selected != 0 && idToItem.TryGetValue(selected, out ITrayMenuItemBase? clickedItem))
         {
-            clickedItem.Command?.Execute(clickedItem.CommandParameter);
+            ITrayCommand? command = clickedItem.Command;
+            // Keep execution behavior consistent with menu presentation:
+            // commands that cannot execute are also rendered as disabled.
+            if (command?.CanExecute() ?? false)
+            {
+                command.Execute(clickedItem.CommandParameter);
+            }
         }
 
         // Destroy all menus (main menu and submenus)
@@ -177,9 +183,11 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
                     nint hSubMenu = BuildMenu(submenu!.Items, idToItem, allMenus, allBitmaps, ref currentId);
                     if (hSubMenu != IntPtr.Zero)
                     {
+                        // CanExecute influences both click handling and the visible enabled state.
+                        bool canExecute = item.Command?.CanExecute() ?? true;
                         var flags = User32.MenuFlags.MF_STRING | User32.MenuFlags.MF_POPUP;
 
-                        if (!item.IsEnabled)
+                        if (!item.IsEnabled || !canExecute)
                             flags |= User32.MenuFlags.MF_DISABLED | User32.MenuFlags.MF_GRAYED;
 
                         _ = User32.AppendMenu(hMenu, (uint)flags, hSubMenu, item.Header!);
@@ -189,9 +197,11 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
                 }
                 else
                 {
+                    // CanExecute influences both click handling and the visible enabled state.
+                    bool canExecute = item.Command?.CanExecute() ?? true;
                     var flags = User32.MenuFlags.MF_STRING;
 
-                    if (!item.IsEnabled)
+                    if (!item.IsEnabled || !canExecute)
                         flags |= User32.MenuFlags.MF_DISABLED | User32.MenuFlags.MF_GRAYED;
 
                     if (item.IsChecked)
@@ -212,7 +222,7 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
                         if (item.IsChecked)
                             menuItemInfo.fState |= (uint)User32.MenuItemState.MFS_CHECKED;
 
-                        if (!item.IsEnabled)
+                        if (!item.IsEnabled || !canExecute)
                             menuItemInfo.fState |= (uint)User32.MenuItemState.MFS_DISABLED;
 
                         _ = User32.SetMenuItemInfo(hMenu, currentId, false, ref menuItemInfo);

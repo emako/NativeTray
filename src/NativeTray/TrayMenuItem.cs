@@ -52,6 +52,8 @@ public class TrayMenuItem : ITrayMenuItemBase
 
     /// <summary>
     /// Gets or sets the command to execute when the menu item is clicked.
+    /// The command's CanExecute result is also used to determine whether the item
+    /// should appear enabled or grayed out.
     /// </summary>
     public ITrayCommand? Command { get; set; }
 
