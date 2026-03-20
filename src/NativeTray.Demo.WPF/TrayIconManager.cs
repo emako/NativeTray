@@ -57,14 +57,20 @@ internal partial class TrayIconManager
                         new TrayMenuItem()
                         {
                             Header = "Option2",
+                            IsChecked = true,
                         }
                     ],
                 },
                 new TrayMenuItem()
                 {
+                    Header = "Show Notification\ttest",
+                    Command = new TrayRelayCommand(ShowBalloonTip),
+                    IsBold = true, // Test the bold style
+                },
+                new TrayMenuItem()
+                {
                     Header = "Restart",
                     Command = new TrayRelayCommand(Restart),
-                    IsBold = true, // Test the bold style
                 },
                 new TrayMenuItem()
                 {
@@ -132,6 +138,11 @@ internal partial class TrayIconManager
                 Application.Current.MainWindow.Activate();
             }
         }
+    }
+
+    private void ShowBalloonTip(object? commandParameter)
+    {
+        _iconHost?.ShowBalloonTip(3000, "Balloon Tip Title", "This is a balloon tip shown from NativeTray.Demo.WPF!", TrayToolTipIcon.Info);
     }
 
     private void Restart(object? commandParameter)
