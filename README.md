@@ -1,3 +1,5 @@
+[![NuGet](https://img.shields.io/nuget/v/NativeTray.svg)](https://nuget.org/packages/NativeTray) [![Actions](https://github.com/emako/NativeTray/actions/workflows/library.nuget.yml/badge.svg)](https://github.com/emako/NativeTray/actions/workflows/library.nuget.yml) [![Platform](https://img.shields.io/badge/platform-Windows-blue?logo=windowsxp&color=1E9BFA)](https://dotnet.microsoft.com/zh-cn/download/dotnet/latest/runtime)
+
 # NativeTray
 
 NativeTray is a modern, easy-to-use library for displaying tray icons (NotifyIcon) in .NET applications. It supports WPF, WinForms, and other .NET platforms, providing non-intrusive system notifications and quick access functionality in the Windows taskbar.
