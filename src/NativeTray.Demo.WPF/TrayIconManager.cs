@@ -64,18 +64,18 @@ internal partial class TrayIconManager
                 new TrayMenuItem()
                 {
                     Header = "Show Notification\ttest",
-                    Command = new TrayRelayCommand(ShowBalloonTip),
+                    Command = new TrayCommand(ShowBalloonTip),
                     IsBold = true, // Test the bold style
                 },
                 new TrayMenuItem()
                 {
                     Header = "Restart",
-                    Command = new TrayRelayCommand(Restart),
+                    Command = new TrayCommand(Restart),
                 },
                 new TrayMenuItem()
                 {
                     Header = "Exit",
-                    Command = new TrayRelayCommand(Exit),
+                    Command = new TrayCommand(Exit),
                     Icon = new Win32Image(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/close.png"))
                     {
                         ShowAsMonochrome = true,

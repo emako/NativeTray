@@ -36,15 +36,15 @@ var trayIcon = new TrayIconHost
 
 trayIcon.Menu = new TrayMenu
 {
-    new TrayMenuItem { Header = "Item 1", Command = new TrayRelayCommand(_ => { /* action */ }) },
+    new TrayMenuItem { Header = "Item 1", Command = new TrayCommand(_ => { /* action */ }) },
     new TraySeparator(),
-    new TrayMenuItem { Header = "Exit", Command = new TrayRelayCommand(_ => Environment.Exit(0)) }
+    new TrayMenuItem { Header = "Exit", Command = new TrayCommand(_ => Environment.Exit(0)) }
 };
 
 trayIcon.ShowBalloonTip(3000, "Hello", "This is a balloon tip.", TrayToolTipIcon.Info);
 ```
 
-Menu item commands use the `ITrayCommand` abstraction. For simple actions, use `TrayRelayCommand`.
+Menu item commands use the `ITrayCommand` abstraction. For simple actions, use `TrayCommand`.
 
 You can set the tray icon theme mode:
 

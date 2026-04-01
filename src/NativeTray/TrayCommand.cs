@@ -11,7 +11,7 @@
 /// When used by tray menu items, returning <c>false</c> will also cause the menu item
 /// to be shown as disabled (grayed out).
 /// </param>
-public class TrayRelayCommand(Action<object?> execute, Func<bool>? canExecute = null) : ITrayCommand
+public class TrayCommand(Action<object?> execute, Func<bool>? canExecute = null) : ITrayCommand
 {
     private readonly Action<object?> _execute =
         execute ?? throw new ArgumentNullException(nameof(execute));
@@ -32,15 +32,15 @@ public class TrayRelayCommand(Action<object?> execute, Func<bool>? canExecute = 
     }
 
     /// <summary>
-    /// Allows an <see cref="Action{Object}"/> to be implicitly converted to a <see cref="TrayRelayCommand"/>.
+    /// Allows an <see cref="Action{Object}"/> to be implicitly converted to a <see cref="TrayCommand"/>.
     /// This enables assigning an <see cref="Action{Object}"/> directly to variables or parameters
-    /// of type <see cref="TrayRelayCommand"/>.
+    /// of type <see cref="TrayCommand"/>.
     /// </summary>
     /// <param name="execute">The action to wrap in a tray command.</param>
-    /// <returns>A new <see cref="TrayRelayCommand"/> instance wrapping the provided action.</returns>
-    public static implicit operator TrayRelayCommand(Action<object?> execute)
+    /// <returns>A new <see cref="TrayCommand"/> instance wrapping the provided action.</returns>
+    public static implicit operator TrayCommand(Action<object?> execute)
     {
-        return new TrayRelayCommand(execute);
+        return new TrayCommand(execute);
     }
 }
 

@@ -44,7 +44,7 @@ internal partial class TrayIconManager
                                 new TrayMenuItem()
                                 {
                                     Header = "Option1-1",
-                                    Command = new TrayRelayCommand(ShowNotification),
+                                    Command = new TrayCommand(ShowNotification),
                                 },
                                 new TrayMenuItem()
                                 {
@@ -62,23 +62,23 @@ internal partial class TrayIconManager
                 new TrayMenuItem()
                 {
                     Header = "Show Window",
-                    Command = new TrayRelayCommand(ShowWindow),
+                    Command = new TrayCommand(ShowWindow),
                 },
                 new TrayMenuItem()
                 {
                     Header = "Show Notification\ttest",
-                    Command = new TrayRelayCommand(ShowNotification),
+                    Command = new TrayCommand(ShowNotification),
                     IsBold = true,
                 },
                 new TrayMenuItem()
                 {
                     Header = "Restart",
-                    Command = new TrayRelayCommand(Restart),
+                    Command = new TrayCommand(Restart),
                 },
                 new TrayMenuItem()
                 {
                     Header = "Exit",
-                    Command = new TrayRelayCommand(Exit),
+                    Command = new TrayCommand(Exit),
                 }
             ],
         };
