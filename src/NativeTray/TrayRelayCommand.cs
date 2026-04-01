@@ -30,6 +30,18 @@ public class TrayRelayCommand(Action<object?> execute, Func<bool>? canExecute = 
             _execute?.Invoke(commandParameter);
         }
     }
+
+    /// <summary>
+    /// Allows an <see cref="Action{Object}"/> to be implicitly converted to a <see cref="TrayRelayCommand"/>.
+    /// This enables assigning an <see cref="Action{Object}"/> directly to variables or parameters
+    /// of type <see cref="TrayRelayCommand"/>.
+    /// </summary>
+    /// <param name="execute">The action to wrap in a tray command.</param>
+    /// <returns>A new <see cref="TrayRelayCommand"/> instance wrapping the provided action.</returns>
+    public static implicit operator TrayRelayCommand(Action<object?> execute)
+    {
+        return new TrayRelayCommand(execute);
+    }
 }
 
 /// <summary>
