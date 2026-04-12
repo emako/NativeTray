@@ -33,6 +33,27 @@ public class Win32Image : IDisposable
         stream.CopyTo(ms);
         _imageBytes = ms.ToArray();
 
+        nint hBitmap = CreateHBitmapFromBytes(_imageBytes);
+        _handle = new SafeHBitmapHandle(hBitmap);
+    }
+
+    public Win32Image(byte[] imageBytes)
+    {
+        _ = imageBytes ?? throw new ArgumentNullException(nameof(imageBytes));
+        if (imageBytes.Length == 0)
+            throw new ArgumentException("Image bytes cannot be empty.", nameof(imageBytes));
+
+        _imageBytes = (byte[])imageBytes.Clone();
+
+        nint hBitmap = CreateHBitmapFromBytes(_imageBytes);
+        _handle = new SafeHBitmapHandle(hBitmap);
+    }
+
+    private static nint CreateHBitmapFromBytes(byte[] imageBytes)
+    {
+        if (imageBytes.Length == 0)
+            throw new InvalidDataException("Image stream is empty.");
+
         GdiPlus.EnsureInitialized();
 
         IStream? imageStream = null;
@@ -44,7 +65,7 @@ public class Win32Image : IDisposable
             if (createStreamResult != 0 || imageStream is null)
                 throw new InvalidOperationException($"CreateStreamOnHGlobal failed with HRESULT 0x{createStreamResult:X8}.");
 
-            imageStream.Write(_imageBytes, _imageBytes.Length, IntPtr.Zero);
+            imageStream.Write(imageBytes, imageBytes.Length, IntPtr.Zero);
             imageStream.Seek(0, 0, IntPtr.Zero);
 
             int createBitmapResult = GdiPlus.GdipCreateBitmapFromStream(imageStream, out gpBitmap);
@@ -55,7 +76,7 @@ public class Win32Image : IDisposable
             if (createHBitmapResult != 0 || hBitmap == IntPtr.Zero)
                 throw new InvalidOperationException($"GdipCreateHBITMAPFromBitmap failed with status code {createHBitmapResult}.");
 
-            _handle = new SafeHBitmapHandle(hBitmap);
+            return hBitmap;
         }
         finally
         {

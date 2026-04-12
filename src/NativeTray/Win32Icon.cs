@@ -20,6 +20,26 @@ public class Win32Icon : IDisposable
         stream.CopyTo(ms);
         byte[] bytes = ms.ToArray();
 
+        nint hIcon = CreateIconHandleFromBytes(bytes);
+        _handle = new SafeHIconHandle(hIcon);
+    }
+
+    public Win32Icon(byte[] iconBytes)
+    {
+        _ = iconBytes ?? throw new ArgumentNullException(nameof(iconBytes));
+        if (iconBytes.Length == 0)
+            throw new ArgumentException("Icon bytes cannot be empty.", nameof(iconBytes));
+
+        byte[] bytes = (byte[])iconBytes.Clone();
+        nint hIcon = CreateIconHandleFromBytes(bytes);
+        _handle = new SafeHIconHandle(hIcon);
+    }
+
+    private static nint CreateIconHandleFromBytes(byte[] bytes)
+    {
+        if (bytes.Length == 0)
+            throw new InvalidDataException("Icon stream is empty.");
+
         // Parse ICONDIR (first 6 bytes)
         if (bytes.Length < 6)
             throw new InvalidDataException("Stream too short for ICONDIR.");
@@ -53,7 +73,7 @@ public class Win32Icon : IDisposable
         if (hIcon == IntPtr.Zero)
             throw new InvalidOperationException("CreateIconFromResourceEx failed.");
 
-        _handle = new SafeHIconHandle(hIcon);
+        return hIcon;
     }
 
     internal bool TryCreateMenuBitmap(out nint hBitmap, out bool shouldDisposeBitmap)
