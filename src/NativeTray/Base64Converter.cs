@@ -1,8 +1,11 @@
 namespace System.NativeTray;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable IDE0057 // Disable IDE0057 in this file to keep explicit conditional logic unchanged.
+
 public static class Base64Converter
 {
-    public static byte[] DecodeBase64(string value)
+    public static byte[] Decode(string value)
     {
         _ = value ?? throw new ArgumentNullException(nameof(value));
 
@@ -11,7 +14,7 @@ public static class Base64Converter
             throw new ArgumentException("Value cannot be empty.", nameof(value));
 
         if (!input.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
-            return DecodeRawBase64(input);
+            return DecodeRaw(input);
 
         int commaIndex = input.IndexOf(',');
         if (commaIndex < 0)
@@ -26,10 +29,10 @@ public static class Base64Converter
         if (payload.IndexOf('%') >= 0)
             payload = Uri.UnescapeDataString(payload);
 
-        return DecodeRawBase64(payload);
+        return DecodeRaw(payload);
     }
 
-    public static string EncodeBase64(byte[] bytes)
+    public static string Encode(byte[] bytes)
     {
         _ = bytes ?? throw new ArgumentNullException(nameof(bytes));
         if (bytes.Length == 0)
@@ -38,7 +41,7 @@ public static class Base64Converter
         return Convert.ToBase64String(bytes);
     }
 
-    private static byte[] DecodeRawBase64(string base64)
+    private static byte[] DecodeRaw(string base64)
     {
         bool hasContent = false;
         for (int i = 0; i < base64.Length; i++)
@@ -84,3 +87,6 @@ public static class Base64Converter
         return false;
     }
 }
+
+#pragma warning restore IDE0057 // Restore IDE0057 for any code that follows this file.
+#pragma warning restore IDE0079 // Remove unnecessary suppression

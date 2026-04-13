@@ -76,10 +76,17 @@ internal partial class TrayIconManager
                 {
                     Header = "Exit",
                     Command = new TrayCommand(Exit),
+#if false
                     Icon = new Win32Image(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/close.png"))
                     {
                         ShowAsMonochrome = true,
                     },
+#else
+                    Icon = new Win32Image(Base64Converter.Decode("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAk0lEQVR4nO3STQ4BQRCG4SfBMRB3sHKQyXAG5xJu4RRY+LsFVmSSEjLpaWNn4d1W+q2u+opfY4Jupj5GLyfYYYVOojbFLSSNjHDGsiYpcQ3JR4Y4YhGSIh5XktYMcMAal5B8zRz3kKR2kqWIzpVk/zZOK8qY+fntfoxTX2ySWURVJnZyiohzd2ITkqZ0tnFsf7x4AMKtG5ek/9cNAAAAAElFTkSuQmCC"))
+                    {
+                        ShowAsMonochrome = true,
+                    },
+#endif
                 }
             ],
         };
