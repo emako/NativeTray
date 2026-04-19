@@ -1,12 +1,16 @@
 <Solution>
   <Project Path="src/NativeTray.Demo.WinUI/NativeTray.Demo.WinUI.csproj">
     <Platform Project="x64" />
-    <Deploy Solution="Debug|*" />
+    <Deploy />
   </Project>
   <Project Path="src/NativeTray.Demo.WPF/NativeTray.Demo.WPF.csproj" />
   <Project Path="src/NativeTray.Demo.ConsoleApp/NativeTray.Demo.ConsoleApp.csproj" />
   <Project Path="src/NativeTray.Demo.Maui/NativeTray.Demo.Maui.csproj">
-    <Deploy Solution="Debug|*" />
+    <Deploy />
+  </Project>
+  <Project Path="src/NativeTray.Demo.UWP/NativeTray.Demo.UWP.csproj" Id="34306099-e4a5-4812-8312-22fd23b19eb0">
+    <Platform Project="x64" />
+    <Deploy />
   </Project>
   <Project Path="src/NativeTray.Demo.WinForms/NativeTray.Demo.WinForms.csproj" />
   <Project Path="src/NativeTray.Demo.Avalonia/NativeTray.Demo.Avalonia.csproj" />
