@@ -86,6 +86,16 @@ internal class ActivationService
     private async Task StartupAsync()
     {
         await Task.CompletedTask;
+
+        try
+        {
+            // Start tray icon for UWP demo
+            TrayIconManager.Start();
+        }
+        catch
+        {
+            // ignore if tray cannot be started in this environment
+        }
     }
 
     private IEnumerable<ActivationHandler> GetActivationHandlers()
