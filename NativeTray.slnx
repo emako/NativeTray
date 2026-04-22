@@ -14,6 +14,6 @@
   </Project>
   <Project Path="src/NativeTray.Demo.WinForms/NativeTray.Demo.WinForms.csproj" />
   <Project Path="src/NativeTray.Demo.Avalonia/NativeTray.Demo.Avalonia.csproj" />
+  <Project Path="src/NativeTray.Demo.Wice/NativeTray.Demo.Wice.csproj" />
   <Project Path="src/NativeTray/NativeTray.csproj" />
 </Solution>
-

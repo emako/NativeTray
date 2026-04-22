@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net472</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="logo.ico"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Wice">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>packages\Wice.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="DirectN" Version="1.18.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\NativeTray\NativeTray.csproj"/>
+    </ItemGroup>
+</Project>

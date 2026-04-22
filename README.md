@@ -59,6 +59,7 @@ trayIcon.ThemeMode = TrayThemeMode.Dark;
 - [NativeTray.Demo.Avalonia](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Avalonia) for [Avalonia](https://github.com/AvaloniaUI/Avalonia) applications.
 - [NativeTray.Demo.WinUI](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.WinUI) for [WinUI](https://github.com/microsoft/microsoft-ui-xaml) applications.
 - [NativeTray.Demo.Maui](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Maui) for [MAUI](https://github.com/dotnet/maui) applications.
+- [NativeTray.Demo.Wice](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Wice) for [Wice](https://github.com/smourier/Wice) applications.
 - [NativeTray.Demo.ConsoleApp](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.ConsoleApp) for Console applications.
 
 ## Note
