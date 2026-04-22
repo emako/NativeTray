@@ -61,6 +61,14 @@ trayIcon.ThemeMode = TrayThemeMode.Dark;
 - [NativeTray.Demo.Maui](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.Maui) for [MAUI](https://github.com/dotnet/maui) applications.
 - [NativeTray.Demo.ConsoleApp](https://github.com/emako/NativeTray/tree/master/src/NativeTray.Demo.ConsoleApp) for Console applications.
 
+## Note
+
+UWP is not supported.
+
+NativeTray relies on Win32 tray APIs (such as Shell_NotifyIcon), while UWP runs in a sandboxed app model and does not provide the required system tray/NotifyIcon capabilities. In short, this limitation comes from UWP itself rather than NativeTray.
+
+For UWP applications, migration to WinUI3 is recommended, and WinUI3 is supported by NativeTray.
+
 ## License
 
 NativeTray is released under the MIT license. You are free to use and modify it, as long as you comply with the terms of the license.
