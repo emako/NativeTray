@@ -190,6 +190,9 @@ public class TrayMenu : IEnumerable<ITrayMenuItemBase>, IList<ITrayMenuItemBase>
                         if (!item.IsEnabled || !canExecute)
                             flags |= User32.MenuFlags.MF_DISABLED | User32.MenuFlags.MF_GRAYED;
 
+                        if (item.IsChecked)
+                            flags |= User32.MenuFlags.MF_CHECKED;
+
                         _ = User32.AppendMenu(hMenu, (uint)flags, hSubMenu, item.Header!);
                         ApplyMenuItemBitmap(hMenu, menuPosition, item, allBitmaps);
                         menuPosition++;
