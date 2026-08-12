@@ -40,6 +40,11 @@ public partial class TrayIconHost : IDisposable
     private readonly uint taskbarCreatedMessageId = 0;
 
     /// <summary>
+    /// Owned tray icon handle. Displayed handle may temporarily be zero while twinkling.
+    /// </summary>
+    private nint _iconHandle = IntPtr.Zero;
+
+    /// <summary>
     /// The theme mode for the tray icon (e.g., auto adapt to light/dark mode).
     /// </summary>
     public TrayThemeMode ThemeMode
@@ -67,14 +72,16 @@ public partial class TrayIconHost : IDisposable
     /// </summary>
     public nint Icon
     {
-        get => notifyIconData.hIcon;
+        get => _iconHandle;
         set
         {
-            if (notifyIconData.hIcon != IntPtr.Zero)
-                _ = User32.DestroyIcon(notifyIconData.hIcon);
-            notifyIconData.hIcon = User32.CopyIcon(value);
-            notifyIconData.uFlags |= (int)Shell32.NotifyIconFlags.NIF_ICON;
-            _ = Shell32.Shell_NotifyIcon((int)Shell32.NOTIFY_COMMAND.NIM_MODIFY, ref notifyIconData);
+            if (_iconHandle != IntPtr.Zero)
+                _ = User32.DestroyIcon(_iconHandle);
+
+            _iconHandle = value != IntPtr.Zero ? User32.CopyIcon(value) : IntPtr.Zero;
+
+            // Keep current twinkle phase: blank stays blank until the next timer tick.
+            ApplyTrayIcon(_isTwink && !_twinkShowingIcon ? IntPtr.Zero : _iconHandle);
         }
     }
 
@@ -90,6 +97,7 @@ public partial class TrayIconHost : IDisposable
             notifyIconData.dwStateMask = (uint)(Shell32.NotifyIconState.NIS_HIDDEN | Shell32.NotifyIconState.NIS_SHAREDICON);
             notifyIconData.uFlags |= (int)Shell32.NotifyIconFlags.NIF_STATE;
             _ = Shell32.Shell_NotifyIcon((int)Shell32.NOTIFY_COMMAND.NIM_MODIFY, ref notifyIconData);
+            SyncTwinkWithVisibility();
         }
     }
 
@@ -273,8 +281,15 @@ public partial class TrayIconHost : IDisposable
         // Handle TaskbarCreated message to re-register tray icon after Explorer restart
         if (msg == taskbarCreatedMessageId)
         {
-            // Re-add the tray icon
+            // Ensure the owned icon is restored before re-adding (may be blank during twinkle).
+            notifyIconData.hIcon = _isTwink && !_twinkShowingIcon ? IntPtr.Zero : _iconHandle;
             _ = Shell32.Shell_NotifyIcon((int)Shell32.NOTIFY_COMMAND.NIM_ADD, ref notifyIconData);
+            return IntPtr.Zero;
+        }
+
+        if (msg == (uint)User32.WindowMessage.WM_TIMER && wParam == TwinkTimerId)
+        {
+            OnTwinkTimer();
             return IntPtr.Zero;
         }
 
@@ -448,15 +463,18 @@ public partial class TrayIconHost : IDisposable
     {
         if (disposing)
         {
+            StopTwink(restoreIcon: false);
+
             // Remove tray icon
             _ = Shell32.Shell_NotifyIcon((int)Shell32.NOTIFY_COMMAND.NIM_DELETE, ref notifyIconData);
 
             // Clean up icon resources
-            if (notifyIconData.hIcon != IntPtr.Zero)
+            if (_iconHandle != IntPtr.Zero)
             {
-                _ = User32.DestroyIcon(notifyIconData.hIcon);
-                notifyIconData.hIcon = IntPtr.Zero;
+                _ = User32.DestroyIcon(_iconHandle);
+                _iconHandle = IntPtr.Zero;
             }
+            notifyIconData.hIcon = IntPtr.Zero;
 
             // Destroy window
             if (hWnd != IntPtr.Zero)

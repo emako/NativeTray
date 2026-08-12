@@ -69,6 +69,12 @@ internal partial class TrayIconManager
                 },
                 new TrayMenuItem()
                 {
+                    Header = "Twink",
+                    IsChecked = false,
+                    Command = new TrayCommand(ToggleTwink),
+                },
+                new TrayMenuItem()
+                {
                     Header = "Restart",
                     Command = new TrayCommand(Restart),
                 },
@@ -150,6 +156,26 @@ internal partial class TrayIconManager
     private void ShowBalloonTip(object? commandParameter)
     {
         _iconHost?.ShowBalloonTip(3000, "Balloon Tip Title", "This is a balloon tip shown from WPF!", TrayToolTipIcon.Info);
+    }
+
+    private void ToggleTwink(object? commandParameter)
+    {
+        if (_iconHost is null)
+            return;
+
+        _iconHost.IsTwink = !_iconHost.IsTwink;
+
+        if (_iconHost.Menu is not null)
+        {
+            foreach (ITrayMenuItemBase item in _iconHost.Menu)
+            {
+                if (item is TrayMenuItem { Header: "Twink" } twinkItem)
+                {
+                    twinkItem.IsChecked = _iconHost.IsTwink;
+                    break;
+                }
+            }
+        }
     }
 
     private void Restart(object? commandParameter)
