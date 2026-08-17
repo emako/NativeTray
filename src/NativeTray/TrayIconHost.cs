@@ -45,6 +45,12 @@ public partial class TrayIconHost : IDisposable
     private nint _iconHandle = IntPtr.Zero;
 
     /// <summary>
+    /// Optional live icon source. When set, the tray icon follows <see cref="Win32Icon"/> rebuilds
+    /// (including system light/dark changes for monochrome icons).
+    /// </summary>
+    private Win32Icon? _iconSource;
+
+    /// <summary>
     /// The theme mode for the tray icon (e.g., auto adapt to light/dark mode).
     /// </summary>
     public TrayThemeMode ThemeMode
@@ -68,21 +74,72 @@ public partial class TrayIconHost : IDisposable
     }
 
     /// <summary>
+    /// Live <see cref="Win32Icon"/> used as the tray icon source.
+    /// Prefer this over <see cref="Icon"/> when using <see cref="Win32Icon.ShowAsMonochrome"/>
+    /// with <see cref="TrayThemeMode.System"/> so the tray icon updates on theme changes.
+    /// </summary>
+    public Win32Icon? IconSource
+    {
+        get => _iconSource;
+        set
+        {
+            if (ReferenceEquals(_iconSource, value))
+                return;
+
+            UnbindIconSource();
+            _iconSource = value;
+
+            if (_iconSource is not null)
+            {
+                _iconSource.HandleChanged += OnIconSourceHandleChanged;
+                SetIconHandle(_iconSource.Handle);
+            }
+        }
+    }
+
+    /// <summary>
     /// Handle to the icon image.
+    /// Assigning a raw handle clears <see cref="IconSource"/>.
     /// </summary>
     public nint Icon
     {
         get => _iconHandle;
         set
         {
-            if (_iconHandle != IntPtr.Zero)
-                _ = User32.DestroyIcon(_iconHandle);
-
-            _iconHandle = value != IntPtr.Zero ? User32.CopyIcon(value) : IntPtr.Zero;
-
-            // Keep current twinkle phase: blank stays blank until the next timer tick.
-            ApplyTrayIcon(_isTwink && !_twinkShowingIcon ? IntPtr.Zero : _iconHandle);
+            UnbindIconSource();
+            SetIconHandle(value);
         }
+    }
+
+    private void UnbindIconSource()
+    {
+        if (_iconSource is null)
+            return;
+
+        _iconSource.HandleChanged -= OnIconSourceHandleChanged;
+        _iconSource = null;
+    }
+
+    private void OnIconSourceHandleChanged(object? sender, EventArgs e)
+    {
+        if (_iconSource is not null)
+            SetIconHandle(_iconSource.Handle);
+    }
+
+    private void SetIconHandle(nint value)
+    {
+        if (_iconHandle != IntPtr.Zero)
+            _ = User32.DestroyIcon(_iconHandle);
+
+        _iconHandle = value != IntPtr.Zero ? User32.CopyIcon(value) : IntPtr.Zero;
+
+        // Keep current twinkle phase: blank stays blank until the next timer tick.
+        ApplyTrayIcon(_isTwink && !_twinkShowingIcon ? IntPtr.Zero : _iconHandle);
+    }
+
+    private void RefreshBoundIconForSystemTheme()
+    {
+        _ = _iconSource?.RefreshMonochromeForSystemTheme();
     }
 
     /// <summary>
@@ -365,28 +422,30 @@ public partial class TrayIconHost : IDisposable
         }
         else if (msg == (uint)User32.WindowMessage.WM_SETTINGCHANGE)
         {
-            if (ThemeMode != TrayThemeMode.None)
-            {
-                string? area = Marshal.PtrToStringUni(lParam);
+            string? area = Marshal.PtrToStringUni(lParam);
 
-                if (string.Equals(area, "ImmersiveColorSet", StringComparison.Ordinal))
+            if (string.Equals(area, "ImmersiveColorSet", StringComparison.Ordinal))
+            {
+                RefreshBoundIconForSystemTheme();
+
+                if (ThemeMode != TrayThemeMode.None)
                 {
                     if (ThemeMode == TrayThemeMode.System)
-                    {
                         SetThemeMode(TrayThemeMode.System);
-                    }
+
                     UserPreferenceChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
         else if (msg == (uint)User32.WindowMessage.WM_THEMECHANGED)
         {
+            RefreshBoundIconForSystemTheme();
+
             if (ThemeMode != TrayThemeMode.None)
             {
                 if (ThemeMode == TrayThemeMode.System)
-                {
                     SetThemeMode(TrayThemeMode.System);
-                }
+
                 UserPreferenceChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -464,6 +523,7 @@ public partial class TrayIconHost : IDisposable
         if (disposing)
         {
             StopTwink(restoreIcon: false);
+            UnbindIconSource();
 
             // Remove tray icon
             _ = Shell32.Shell_NotifyIcon((int)Shell32.NOTIFY_COMMAND.NIM_DELETE, ref notifyIconData);

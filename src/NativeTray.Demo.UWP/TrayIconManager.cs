@@ -21,13 +21,14 @@ internal partial class TrayIconManager
 
     private TrayIconManager()
     {
-        Stream iconStream = ResourceHelper.GetStream("ms-appx:///logo.ico");
-        using Win32Icon icon = new(iconStream);
-
         _iconHost = new TrayIconHost()
         {
             ToolTipText = "NativeTray.Demo.UWP",
-            Icon = icon.Handle,
+            IconSource = new Win32Icon(ResourceHelper.GetStream("ms-appx:///logo.ico"))
+            {
+                ShowAsMonochrome = true,
+                ThemeMode = TrayThemeMode.System,
+            },
             ThemeMode = TrayThemeMode.System,
             Menu =
             [

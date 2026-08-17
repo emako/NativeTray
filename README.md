@@ -12,6 +12,7 @@ NativeTray is a modern, easy-to-use library for displaying tray icons (NotifyIco
 - Context menu with checkable, disabled, and bold items.
 - Balloon notifications with custom title, text, and icon.
 - Theme mode support (light, dark, system).
+- Monochrome icons (`ShowAsMonochrome`) on both `Win32Icon` and `Win32Image`, auto-adapting to light/dark themes.
 - Icon twinkle (`IsTwink` / `TwinkInterval`) by alternating the tray icon on and off.
 - High DPI support for crisp icon rendering.
 - Easy API for menu and icon management.
@@ -51,6 +52,32 @@ You can set the tray icon theme mode:
 
 ```csharp
 trayIcon.ThemeMode = TrayThemeMode.Dark;
+```
+
+You can render icons as monochrome (auto black/white for light/dark). For tray icons that follow system theme changes, bind with <c>IconSource</c> (do not pass a one-shot <c>Handle</c> copy):
+
+```csharp
+var icon = new Win32Icon(iconStream)
+{
+    ShowAsMonochrome = true,
+    ThemeMode = TrayThemeMode.System,
+};
+
+var trayIcon = new TrayIconHost
+{
+    IconSource = icon,
+    ThemeMode = TrayThemeMode.System,
+};
+```
+
+Menu items can use the same `Win32Icon` / `Win32Image` objects directly:
+
+```csharp
+new TrayMenuItem
+{
+    Header = "Exit",
+    Icon = new Win32Image(pngStream) { ShowAsMonochrome = true },
+};
 ```
 
 You can twinkle the tray icon (show/hide the icon at a fixed interval):

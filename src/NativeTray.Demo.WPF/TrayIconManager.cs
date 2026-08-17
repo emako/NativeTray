@@ -14,17 +14,18 @@ namespace WpfApp1;
 internal partial class TrayIconManager
 {
     private static TrayIconManager _instance = null!;
-
     private readonly TrayIconHost? _iconHost = null;
 
     private TrayIconManager()
     {
-        using Win32Icon icon = new(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/logo.ico"));
-
         _iconHost = new TrayIconHost()
         {
             ToolTipText = "NativeTray.Demo.WPF",
-            Icon = icon.Handle,
+            IconSource = new Win32Icon(ResourceHelper.GetStream("pack://application:,,,/NativeTray.Demo.WPF;component/logo.ico"))
+            {
+                ShowAsMonochrome = true,
+                ThemeMode = TrayThemeMode.System,
+            },
             ThemeMode = TrayThemeMode.System,
             Menu =
             [

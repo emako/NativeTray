@@ -42,6 +42,9 @@ internal static class GdiPlus
     public static extern int GdipCreateHBITMAPFromBitmap(nint bitmap, out nint hbmReturn, uint background);
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
+    public static extern int GdipCreateHICONFromBitmap(nint bitmap, out nint hicon);
+
+    [DllImport("gdiplus.dll", ExactSpelling = true)]
     public static extern int GdipGetImageWidth(nint image, out uint width);
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
@@ -55,6 +58,19 @@ internal static class GdiPlus
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
     public static extern int GdipDisposeImage(nint image);
+
+    [DllImport("gdiplus.dll", ExactSpelling = true)]
+    public static extern int GdipCloneBitmapAreaI(
+        int x,
+        int y,
+        int width,
+        int height,
+        int format,
+        nint srcBitmap,
+        out nint dstBitmap);
+
+    [DllImport("gdiplus.dll", ExactSpelling = true)]
+    public static extern int GdipCreateBitmapFromHBITMAP(nint hbm, nint hpal, out nint bitmap);
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
     private static extern int GdiplusStartup(out nint token, ref GdiplusStartupInput input, nint output);

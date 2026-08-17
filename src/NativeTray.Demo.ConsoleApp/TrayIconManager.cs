@@ -16,12 +16,14 @@ internal partial class TrayIconManager
 
     private TrayIconManager()
     {
-        using var icon = new Win32Icon(ResourceHelper.GetStream("NativeTray.Demo.ConsoleApp.logo.ico"));
-
         _iconHost = new TrayIconHost()
         {
             ToolTipText = "NativeTray.Demo.ConsoleApp",
-            Icon = icon.Handle,
+            IconSource = new Win32Icon(ResourceHelper.GetStream("NativeTray.Demo.ConsoleApp.logo.ico"))
+            {
+                ShowAsMonochrome = true,
+                ThemeMode = TrayThemeMode.System,
+            },
             ThemeMode = TrayThemeMode.System,
             Menu =
             [

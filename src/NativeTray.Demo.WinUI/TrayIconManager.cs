@@ -17,13 +17,14 @@ internal partial class TrayIconManager
 
     private TrayIconManager()
     {
-        // Use ms-appx URI for packaged app resource access in WinUI
-        using Win32Icon icon = new(ResourceHelper.GetStream("ms-appx:///Assets/logo.ico"));
-
         _iconHost = new TrayIconHost()
         {
             ToolTipText = "NativeTray.Demo.WinUI",
-            Icon = icon.Handle,
+            IconSource = new Win32Icon(ResourceHelper.GetStream("ms-appx:///Assets/logo.ico"))
+            {
+                ShowAsMonochrome = true,
+                ThemeMode = TrayThemeMode.System,
+            },
             ThemeMode = TrayThemeMode.System,
             Menu =
             [

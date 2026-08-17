@@ -19,13 +19,14 @@ internal partial class TrayIconManager
 
     private TrayIconManager()
     {
-        using var iconStream = AssetLoader.Open(new Uri("avares://NativeTray.Demo.Avalonia/logo.ico"));
-        using Win32Icon icon = new(iconStream);
-
         _iconHost = new TrayIconHost()
         {
             ToolTipText = "NativeTray.Demo.Avalonia",
-            Icon = icon.Handle,
+            IconSource = new Win32Icon(AssetLoader.Open(new Uri("avares://NativeTray.Demo.Avalonia/logo.ico")))
+            {
+                ShowAsMonochrome = true,
+                ThemeMode = TrayThemeMode.System,
+            },
             ThemeMode = TrayThemeMode.System,
             Menu =
             [

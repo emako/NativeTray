@@ -44,7 +44,7 @@ public partial class TrayIconHost
         }
     }
 
-    protected static void OnUserPreferenceChangedEventHandler(object? sender, EventArgs e)
+    protected void OnUserPreferenceChangedEventHandler(object? sender, EventArgs e)
     {
         if (OSThemeHelper.SystemUsesDarkTheme())
         {
@@ -56,5 +56,7 @@ public partial class TrayIconHost
             _ = UxTheme.SetPreferredAppMode(UxTheme.PreferredAppMode.ForceLight);
             UxTheme.FlushMenuThemes();
         }
+
+        RefreshBoundIconForSystemTheme();
     }
 }
