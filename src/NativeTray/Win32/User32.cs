@@ -33,6 +33,9 @@ internal static class User32
     [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern nint MB_GetString(uint wBtn);
 
+    public const int SM_CXSMICON = 49;
+    public const int SM_CYSMICON = 50;
+
     [DllImport("user32.dll", SetLastError = true)]
     public static extern nint CreateIconFromResourceEx(
         ref byte pbIconBits,
@@ -45,6 +48,9 @@ internal static class User32
 
     [DllImport("user32.dll")]
     public static extern int DestroyIcon(nint hIcon);
+
+    [DllImport("user32.dll")]
+    public static extern int GetSystemMetrics(int nIndex);
 
     [DllImport("user32.dll", ExactSpelling = true)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]

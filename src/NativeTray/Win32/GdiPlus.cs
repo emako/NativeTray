@@ -70,7 +70,25 @@ internal static class GdiPlus
         out nint dstBitmap);
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
+    public static extern int GdipCreateBitmapFromScan0(
+        int width,
+        int height,
+        int stride,
+        int format,
+        nint scan0,
+        out nint bitmap);
+
+    [DllImport("gdiplus.dll", ExactSpelling = true)]
     public static extern int GdipCreateBitmapFromHBITMAP(nint hbm, nint hpal, out nint bitmap);
+
+    [DllImport("gdiplus.dll", ExactSpelling = true)]
+    public static extern int GdipCreateBitmapFromHICON(nint hicon, out nint bitmap);
+
+    [DllImport("gdiplus.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+    public static extern int GdipSaveImageToStream(nint image, IStream stream, ref Guid clsidEncoder, nint encoderParams);
+
+    /// <summary>image/png encoder CLSID used by GDI+.</summary>
+    public static readonly Guid PngEncoderClsid = new("557CF406-1A04-11D3-9A73-0000F81EF32E");
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
     private static extern int GdiplusStartup(out nint token, ref GdiplusStartupInput input, nint output);
