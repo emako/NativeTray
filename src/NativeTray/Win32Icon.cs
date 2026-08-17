@@ -10,6 +10,8 @@ public class Win32Icon : IDisposable
     private readonly SafeHIconHandle _handle = new();
     private bool _showAsMonochrome;
     private TrayThemeMode _themeMode = TrayThemeMode.System;
+    private nint _monoIconOnDark;
+    private nint _monoIconOnLight;
     private bool _hasAppliedMonochromeArgb;
     private uint _appliedMonochromeArgb;
 
@@ -29,6 +31,7 @@ public class Win32Icon : IDisposable
     /// <summary>
     /// Gets or sets whether the icon should be rendered as monochrome.
     /// Affects both <see cref="Handle"/> (tray) and menu bitmaps.
+    /// When set, <see cref="MonoIconOnDark"/> / <see cref="MonoIconOnLight"/> are preferred over GDI conversion.
     /// </summary>
     public bool ShowAsMonochrome
     {
@@ -56,6 +59,44 @@ public class Win32Icon : IDisposable
                 return;
 
             _themeMode = value;
+            if (_showAsMonochrome)
+                RebuildHandle();
+        }
+    }
+
+    /// <summary>
+    /// Optional <c>HICON</c> used when <see cref="ShowAsMonochrome"/> is enabled and the effective theme is dark.
+    /// When non-zero, this handle is copied as-is and GDI monochrome conversion is skipped for that theme.
+    /// The caller owns the handle; it is not destroyed by this <see cref="Win32Icon"/>.
+    /// </summary>
+    public nint MonoIconOnDark
+    {
+        get => _monoIconOnDark;
+        set
+        {
+            if (_monoIconOnDark == value)
+                return;
+
+            _monoIconOnDark = value;
+            if (_showAsMonochrome)
+                RebuildHandle();
+        }
+    }
+
+    /// <summary>
+    /// Optional <c>HICON</c> used when <see cref="ShowAsMonochrome"/> is enabled and the effective theme is light.
+    /// When non-zero, this handle is copied as-is and GDI monochrome conversion is skipped for that theme.
+    /// The caller owns the handle; it is not destroyed by this <see cref="Win32Icon"/>.
+    /// </summary>
+    public nint MonoIconOnLight
+    {
+        get => _monoIconOnLight;
+        set
+        {
+            if (_monoIconOnLight == value)
+                return;
+
+            _monoIconOnLight = value;
             if (_showAsMonochrome)
                 RebuildHandle();
         }
@@ -107,8 +148,11 @@ public class Win32Icon : IDisposable
         nint hIcon;
         if (_showAsMonochrome)
         {
-            if (!Win32Monochrome.TryCreateMonochromeIcon(_iconBytes, _themeMode, out hIcon))
+            if (!TryCopyMonochromeOverrideHandle(out hIcon)
+                && !Win32Monochrome.TryCreateMonochromeIcon(_iconBytes, _themeMode, out hIcon))
+            {
                 hIcon = CreateIconHandleFromBytes(_iconBytes);
+            }
 
             _appliedMonochromeArgb = Win32Monochrome.ResolveArgb(_themeMode);
             _hasAppliedMonochromeArgb = true;
@@ -121,6 +165,37 @@ public class Win32Icon : IDisposable
 
         _handle.ReplaceHandle(hIcon);
         HandleChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private bool TryCopyMonochromeOverrideHandle(out nint hIcon)
+    {
+        hIcon = IntPtr.Zero;
+
+        if (!TryGetMonochromeOverride(out nint sourceHandle) || sourceHandle == IntPtr.Zero)
+            return false;
+
+        // Do not copy our own live handle — ReplaceHandle would destroy it.
+        if (TryGetHandle(out nint currentHandle) && sourceHandle == currentHandle)
+            return false;
+
+        hIcon = User32.CopyIcon(sourceHandle);
+        return hIcon != IntPtr.Zero;
+    }
+
+    private bool TryGetMonochromeOverride(out nint sourceHandle)
+    {
+        sourceHandle = IntPtr.Zero;
+
+        TrayThemeMode effective = _themeMode;
+        if (effective == TrayThemeMode.System)
+            effective = OSThemeHelper.SystemUsesDarkTheme() ? TrayThemeMode.Dark : TrayThemeMode.Light;
+
+        if (effective == TrayThemeMode.Dark)
+            sourceHandle = _monoIconOnDark;
+        else if (effective == TrayThemeMode.Light)
+            sourceHandle = _monoIconOnLight;
+
+        return sourceHandle != IntPtr.Zero;
     }
 
     private static nint CreateIconHandleFromBytes(byte[] bytes)
@@ -139,14 +214,26 @@ public class Win32Icon : IDisposable
         hBitmap = IntPtr.Zero;
         shouldDisposeBitmap = false;
 
-        if (ShowAsMonochrome)
+        // Prefer the current handle (override or GDI-built mono) so menu icons match the tray.
+        if (TryCreateBitmapFromHandle(out hBitmap))
         {
-            if (!Win32Monochrome.TryCreateMonochromeBitmap(_iconBytes, ThemeMode, out hBitmap))
-                return false;
-
             shouldDisposeBitmap = true;
             return true;
         }
+
+        if (ShowAsMonochrome
+            && Win32Monochrome.TryCreateMonochromeBitmap(_iconBytes, ThemeMode, out hBitmap))
+        {
+            shouldDisposeBitmap = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryCreateBitmapFromHandle(out nint hBitmap)
+    {
+        hBitmap = IntPtr.Zero;
 
         if (!TryGetHandle(out nint hIcon))
             return false;
@@ -163,7 +250,6 @@ public class Win32Icon : IDisposable
             _ = Gdi32.DeleteObject(unusedBitmap);
 
         hBitmap = selectedBitmap;
-        shouldDisposeBitmap = true;
         return true;
     }
 
