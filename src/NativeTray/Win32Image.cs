@@ -2,7 +2,6 @@ using Microsoft.Win32.SafeHandles;
 using System.IO;
 using System.NativeTray.Win32;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace System.NativeTray;
 
@@ -56,17 +55,17 @@ public class Win32Image : IDisposable
 
         GdiPlus.EnsureInitialized();
 
-        IStream? imageStream = null;
+        nint imageStream = IntPtr.Zero;
         nint gpBitmap = IntPtr.Zero;
 
         try
         {
             int createStreamResult = Ole32.CreateStreamOnHGlobal(IntPtr.Zero, true, out imageStream);
-            if (createStreamResult != 0 || imageStream is null)
+            if (createStreamResult != 0 || imageStream == IntPtr.Zero)
                 throw new InvalidOperationException($"CreateStreamOnHGlobal failed with HRESULT 0x{createStreamResult:X8}.");
 
-            imageStream.Write(imageBytes, imageBytes.Length, IntPtr.Zero);
-            imageStream.Seek(0, 0, IntPtr.Zero);
+            if (!ComStream.Write(imageStream, imageBytes) || !ComStream.SeekBegin(imageStream))
+                throw new InvalidOperationException("Failed to write image bytes to IStream.");
 
             int createBitmapResult = GdiPlus.GdipCreateBitmapFromStream(imageStream, out gpBitmap);
             if (createBitmapResult != 0 || gpBitmap == IntPtr.Zero)
@@ -83,8 +82,8 @@ public class Win32Image : IDisposable
             if (gpBitmap != IntPtr.Zero)
                 _ = GdiPlus.GdipDisposeImage(gpBitmap);
 
-            if (imageStream is not null)
-                Marshal.ReleaseComObject(imageStream);
+            if (imageStream != IntPtr.Zero)
+                Marshal.Release(imageStream);
         }
     }
 

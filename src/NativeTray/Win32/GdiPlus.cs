@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace System.NativeTray.Win32;
 
@@ -36,7 +35,7 @@ internal static class GdiPlus
     }
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
-    public static extern int GdipCreateBitmapFromStream(IStream stream, out nint bitmap);
+    public static extern int GdipCreateBitmapFromStream(nint stream, out nint bitmap);
 
     [DllImport("gdiplus.dll", ExactSpelling = true)]
     public static extern int GdipCreateHBITMAPFromBitmap(nint bitmap, out nint hbmReturn, uint background);
@@ -84,8 +83,8 @@ internal static class GdiPlus
     [DllImport("gdiplus.dll", ExactSpelling = true)]
     public static extern int GdipCreateBitmapFromHICON(nint hicon, out nint bitmap);
 
-    [DllImport("gdiplus.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
-    public static extern int GdipSaveImageToStream(nint image, IStream stream, ref Guid clsidEncoder, nint encoderParams);
+    [DllImport("gdiplus.dll", ExactSpelling = true)]
+    public static extern int GdipSaveImageToStream(nint image, nint stream, ref Guid clsidEncoder, nint encoderParams);
 
     /// <summary>image/png encoder CLSID used by GDI+.</summary>
     public static readonly Guid PngEncoderClsid = new("557CF406-1A04-11D3-9A73-0000F81EF32E");

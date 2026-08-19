@@ -4,7 +4,8 @@ namespace System.NativeTray.Win32;
 
 internal static class UxTheme
 {
-    [DllImport("uxtheme.dll", EntryPoint = "#132", SetLastError = true, CharSet = CharSet.Unicode)]
+    // Ordinal exports: ExactSpelling avoids Native AOT GetProcAddressWithSuffix on a non-string name.
+    [DllImport("uxtheme.dll", EntryPoint = "#132", ExactSpelling = true)]
     public static extern bool ShouldAppsUseDarkMode();
 
     /// <summary>
@@ -13,17 +14,17 @@ internal static class UxTheme
     ///  - After 18362, the #135 is SetPreferredAppMode(PreferredAppMode)
     /// Since the support for AllowDarkModeForApp is uncertain, it will not be considered for use.
     /// </summary>
-    [DllImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true, CharSet = CharSet.Unicode)]
+    [DllImport("uxtheme.dll", EntryPoint = "#135", ExactSpelling = true)]
     public static extern int SetPreferredAppMode(PreferredAppMode preferredAppMode);
 
-    [DllImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true, CharSet = CharSet.Unicode)]
+    [DllImport("uxtheme.dll", EntryPoint = "#135", ExactSpelling = true)]
     [Obsolete("Since the support for AllowDarkModeForApp is uncertain, it will not be considered for use.")]
     public static extern void AllowDarkModeForApp(bool allowDark);
 
-    [DllImport("uxtheme.dll", EntryPoint = "#136", SetLastError = true, CharSet = CharSet.Unicode)]
+    [DllImport("uxtheme.dll", EntryPoint = "#136", ExactSpelling = true)]
     public static extern void FlushMenuThemes();
 
-    [DllImport("uxtheme.dll", EntryPoint = "#138", SetLastError = true, CharSet = CharSet.Unicode)]
+    [DllImport("uxtheme.dll", EntryPoint = "#138", ExactSpelling = true)]
     public static extern bool ShouldSystemUseDarkMode();
 
     public enum PreferredAppMode : int { Default, AllowDark, ForceDark, ForceLight, Max };

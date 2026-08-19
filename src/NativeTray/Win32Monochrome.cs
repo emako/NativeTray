@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.NativeTray.Win32;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace System.NativeTray;
 
@@ -541,36 +540,36 @@ internal static class Win32Monochrome
     private static bool TryLoadBitmapFromBytes(byte[] imageBytes, out nint bitmap)
     {
         bitmap = IntPtr.Zero;
-        IStream? imageStream = null;
+        nint imageStream = IntPtr.Zero;
 
         try
         {
             int createStreamResult = Ole32.CreateStreamOnHGlobal(IntPtr.Zero, true, out imageStream);
-            if (createStreamResult != 0 || imageStream is null)
+            if (createStreamResult != 0 || imageStream == IntPtr.Zero)
                 return false;
 
-            imageStream.Write(imageBytes, imageBytes.Length, IntPtr.Zero);
-            imageStream.Seek(0, 0, IntPtr.Zero);
+            if (!ComStream.Write(imageStream, imageBytes) || !ComStream.SeekBegin(imageStream))
+                return false;
 
             int createBitmapResult = GdiPlus.GdipCreateBitmapFromStream(imageStream, out bitmap);
             return createBitmapResult == 0 && bitmap != IntPtr.Zero;
         }
         finally
         {
-            if (imageStream is not null)
-                Marshal.ReleaseComObject(imageStream);
+            if (imageStream != IntPtr.Zero)
+                Marshal.Release(imageStream);
         }
     }
 
     private static bool TrySavePng(nint gpBitmap, out byte[] pngBytes)
     {
-        pngBytes = new byte[0];
-        IStream? stream = null;
+        pngBytes = [];
+        nint stream = IntPtr.Zero;
 
         try
         {
             int createStreamResult = Ole32.CreateStreamOnHGlobal(IntPtr.Zero, true, out stream);
-            if (createStreamResult != 0 || stream is null)
+            if (createStreamResult != 0 || stream == IntPtr.Zero)
                 return false;
 
             Guid pngClsid = GdiPlus.PngEncoderClsid;
@@ -578,20 +577,12 @@ internal static class Win32Monochrome
             if (saveResult != 0)
                 return false;
 
-            stream.Seek(0, 0, IntPtr.Zero);
-            stream.Stat(out System.Runtime.InteropServices.ComTypes.STATSTG stat, 0);
-            long size = stat.cbSize;
-            if (size <= 0 || size > int.MaxValue)
-                return false;
-
-            pngBytes = new byte[(int)size];
-            stream.Read(pngBytes, pngBytes.Length, IntPtr.Zero);
-            return pngBytes.Length > 0;
+            return ComStream.TryReadAll(stream, out pngBytes) && pngBytes.Length > 0;
         }
         finally
         {
-            if (stream is not null)
-                Marshal.ReleaseComObject(stream);
+            if (stream != IntPtr.Zero)
+                Marshal.Release(stream);
         }
     }
 
